@@ -20,10 +20,10 @@
 */
     function restoreState(error, json) {
 
-        document.querySelector("#notify").style.visibility = 'hidden';
+        $("#notify").hide();
 
         if (error === "error") {
-            document.querySelector("#notifyError").visibility = 'visible';
+            $('#notifyError').show();
             return;
         }
 
@@ -45,17 +45,17 @@
 */
     function preventDefault() {
 
-        var name = document.querySelector("#title").value,
-            start = document.querySelector("#from").value,
-            end = document.querySelector("#to").value,
-            location = document.querySelector("#location").value,
-            raiting = document.querySelector("#raiting").value,
-            description = document.querySelector("#description").value,
-            remindTime = document.querySelector("#remindTime").value;
+        var name = $("#title").val(),
+            start = $("#from").val(),
+            end = $("#to").val(),
+            location = $("#location").val(),
+            raiting = $("#raiting").val(),
+            description = $("#description").val(),
+            remindTime = $("#remindTime").val();
 
-        if (!validateTitle(name, document.querySelector('#title_help'))) { alert("Событие не было добавлено. Ошибка"); return; };
-        if (!validateDate(start, document.querySelector('#from_help'))) { alert("Событие не было добавлено. Ошибка"); return; };
-        if (!validateNumber(remindTime, document.querySelector('#remindTime_help'))) { alert("Событие не было добавлено. Ошибка"); return; };
+        if (!validateTitle(name, $('#title_help'))) { alert("Событие не было добавлено. Ошибка"); return; };
+        if (!validateDate(start, $('#from_help'))) { alert("Событие не было добавлено. Ошибка"); return; };
+        if (!validateNumber(remindTime, $('#remindTime_help'))) { alert("Событие не было добавлено. Ошибка"); return; };
 
         var element = new Event({
                 name: name,
@@ -116,12 +116,12 @@
 */
 
     function changeDocument(changeType) {
-        var parent = document.querySelector(".collection"),
-            removeList = document.querySelector(".events");
-        parent.removeChild(removeList);
+        var $removeList = $(".events").eq(0);
+        $removeList.remove();
 
-        var addList = document.createElement('ul');
-        addList.className = "events";
+        var $addList = $('<ul />', {
+            class: "events"
+            });
 
         var fragment = document.createDocumentFragment();
         if (changeType === "sort") {
@@ -134,12 +134,12 @@
         for (var i = 0; i < length; i++)
         {
             var element = filterList.items[i];
-            var el = addLiElement(element);
-            addList.appendChild(el);
+            var $el = addLiElement(element);
+            $el.appendTo($addList);
         }
 
         var parent = document.querySelector(".collection");
-        fragment.appendChild(addList);
+        $addList.appendTo(fragment);
         parent.appendChild(fragment);
 }
 
@@ -152,39 +152,39 @@
 */
 
     function addLiElement (element) {
-        var el = document.createElement('li');
-        el.className = 'event_item';
+        var $el = $('<li />', {
+            className: 'event_item'
+        });
 
-        var name = document.createElement('div');
-        name.textContent = "Название: " + element.name;
+        var $name = $('<div />', {
+            text: "Название: " + element.name
+        }).appendTo($el);
 
-        var start = document.createElement('div');
-        start.textContent = "Начало: " + element.start;
+        var $start = $('<div />', {
+            text: "Начало: " + element.start
+        }).appendTo($el);
 
-        var end = document.createElement('div');
-        end.textContent = "Окончание: " + element.end;
+        var $end = $('<div />', {
+            text: "Окончание: " + element.end
+        }).appendTo($el);
 
-        var location = document.createElement('div');
-        location.textContent = "Местоположение: " + element.location;
+        var $location = $('<div />', {
+            text: "Местоположение: " + element.location
+        }).appendTo($el);
 
-        var remindTime = document.createElement('div');
-        remindTime.textContent = "Напомнить за: " + element.remindTime + "минут";
+        var $remindTime = $('<div />', {
+            text: "Напомнить за: " + element.remindTime + "минут"
+        }).appendTo($el);
 
-        var description = document.createElement('div');
-        description.textContent = "Описание: " + element.description;
-        
-        var raiting = document.createElement('div');
-        raiting.textContent = "Рейтинг: " + element.raiting;
+        var $description = $('<div />', {
+            text: "Описание: " + element.description
+        }).appendTo($el);
 
-        el.appendChild(name);
-        el.appendChild(start);
-        el.appendChild(end);
-        el.appendChild(location);
-        el.appendChild(remindTime);
-        el.appendChild(description);
-        el.appendChild(raiting);
+        var $raiting = $('<div />', {
+            text: "Рейтинг: " + element.raiting
+        }).appendTo($el);
 
-        return el;
+        return $el;
     };
 
 /**
