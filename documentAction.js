@@ -123,9 +123,8 @@
         var $removeList = $(".events");
         $removeList.remove();
 
-        var $addList = $('<ul />', {
-            class: "events"
-            });
+        var $addList = $('<ul />')
+            .addClass("events");
 
         var fragment = document.createDocumentFragment();
         if (changeType === "sort") {
