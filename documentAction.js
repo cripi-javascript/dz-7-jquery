@@ -18,7 +18,7 @@
 
         $.ajax({
             dataType: 'json',
-            url: 'http://localhost:8080/current-event.json',
+            url: 'http://http://yunnii.github.com/dz-7-jquery/current-event.json',
             success: function(jqXHR) {
                 for (var i = 0; i < jqXHR.length; i++)
                 {
