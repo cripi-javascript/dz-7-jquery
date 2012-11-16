@@ -191,43 +191,42 @@
  * Навешивает обработчики событий на страницу
 */
      function addListener() {
-        var name = document.querySelector("#title");
-        var start = document.querySelector("#from");
-        var remindTime = document.querySelector("#remindTime");
-        var filters = document.querySelectorAll('.filter');
-        var sort = document.querySelectorAll('.sort');
-        var button = document.querySelector("#addButton");
+        var $name = $("#title");
+        var $start = $("#from");
+        var $remindTime = $("#remindTime");
+        var $filters = $('.filter');
+        var $sort = $('.sort');
+        var $button = $("#addButton");
 
-        name.addEventListener('blur', function(event) {
-            var cur = event.currentTarget;
-            validateTitle(cur.value, document.querySelector('#title_help'));
+        $name.on('blur', function($event) {
+            var cur = $event.currentTarget;
+            validateTitle(cur.value, $('#title_help'));
         });
 
-        start.addEventListener('blur', function (event) {
-            var cur = event.currentTarget;
-            validateDate(cur.value, document.querySelector('#from_help'));
+        $start.on('blur', function ($event) {
+            var cur = $event.currentTarget;
+            validateDate(cur.value, $('#from_help'));
         });
 
-        remindTime.addEventListener('blur', function (event) {
-            var cur = event.currentTarget;
-            validateNumber(remindTime.value, document.querySelector('#remindTime_help'));
+        $remindTime.on('blur', function ($event) {
+            var cur = $event.currentTarget;
+            validateNumber(remindTime.value, $('#remindTime_help'));
         });
 
-        for (var i=0; i < filters.length; i++) {
-            filters[i].addEventListener('change', function (event) {
-                filterOption = document.querySelector('input[name="filter"]:checked').value; 
-                changeDocument("filter");
-            });
-        }
+        $filters.each(function(index) {
+            $(this).on('change', function ($event) {
+            filterOption = document.querySelector('input[name="filter"]:checked').value; 
+            changeDocument("filter");
+        })});
 
-        for (var i=0; i < sort.length; i++) {
-            sort[i].addEventListener('change', function(event) {
-                sortOption = document.querySelector('input[name="sort"]:checked').value; 
-                changeDocument("sort");
-            });
-        }
+        $sort.each(function(index) {
+            $(this).on('change', function ($event) {
+            sortOption = document.querySelector('input[name="sort"]:checked').value; 
+            changeDocument("sort");
+        })});
 
-        button.addEventListener('click', preventDefault);
+
+        $button.on('click', preventDefault);
     }
 
 }(window));

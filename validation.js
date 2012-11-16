@@ -6,15 +6,10 @@
     exports.showError = function (isError, helpText) {
 
         if (isError) {
-            if (helpText.style.visibility !== 'visible') {
-                helpText.style.visibility = 'visible';
-            }
+            helpText.show();
             return;
         }
-
-        if (helpText.style.visibility !== 'hidden') {
-            helpText.style.visibility = 'hidden';
-        }
+        helpText.hide();
     };
 
     exports.validateTitle = function (input, helpText) {
