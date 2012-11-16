@@ -1,4 +1,4 @@
-﻿(function (exports) {
+﻿$(function (exports) {
     "use strict";
 
     var ListOfEvents = new Events();
@@ -7,36 +7,37 @@
     var filterOption = "all";
     var sortOption = "without";
 
-    document.body.addEventListener('load', initialise(), false);
+    $(document.body).on('load', initialise());
 
-    function initialise() {
-        asyncXHR('GET','http://localhost:8080/current-event.json', restoreState, null);
-    }
-
-    /**
+/**
     * Загружает свое состояние с сервера
     * при отсутсвии соединения/страницы на сервере пытается подключиться через 5 минут снова
     *
 */
-    function restoreState(error, json) {
+    function initialise() {
 
-        $("#notify").hide();
-
-        if (error === "error") {
-            $('#notifyError').show();
-            return;
+        $.ajax({
+            dataType: 'json',
+            url: 'http://localhost:8080/current-event.json',
+            success: function(jqXHR) {
+                for (var i = 0; i < jqXHR.length; i++)
+                {
+                    var newEvent = new Event(jqXHR[i]).validate();
+                    ListOfEvents = ListOfEvents.add(newEvent);
+                };
+                changeDocument("sort");
+                addListener();
+            },
+            error: function() {
+                if (error === "error") {
+                    $('#notifyError').show();
+                    return;
+                }
+            }})
+            .always(function() { 
+                    $("#notify").hide(); 
+                });
         }
-
-        var parseObject = JSON.parse(json);
-
-        for (var i=0; i < parseObject.length; i++) {
-            var newEvent = new Event(parseObject[i]).validate();
-            ListOfEvents = ListOfEvents.add(newEvent);
-        };
-
-        changeDocument("sort");
-        addListener();
-}
 
 /**
  * Добавляет новое событие в список. Если установлены опции фильтрации и сортировки 
@@ -68,19 +69,22 @@
             }).validate();
 
         var result = ListOfEvents.add(element);
-        var data = result.serialise();
 
-        asyncXHR('POST','http://localhost:8080/current-event.json', function(error) {
-
-          /*if (error === "error") {
-                alert("Не могу подключиться к северу. Попробуйте позже");
-                return;
-            }*/
-
-            ListOfEvents = result;
-            changeDocument("sort");
-            document.forms["form"].reset();
-        }, data);
+        $.ajax({
+            type: 'POST',
+            url: 'http://yunnii.github.com/dz-7-jquery/current-event.json',
+            data: result.serialise(),
+            error: function() {
+              /*if (error === "error") {
+                    alert("Не могу подключиться к северу. Попробуйте позже");
+                    return;
+                }*/
+            }})
+            .always(function() {
+                ListOfEvents = result;
+                changeDocument("sort");
+                document.forms["form"].reset();
+            });
     };
 
     function filterEvents(listEvents) {
@@ -116,7 +120,7 @@
 */
 
     function changeDocument(changeType) {
-        var $removeList = $(".events").eq(0);
+        var $removeList = $(".events");
         $removeList.remove();
 
         var $addList = $('<ul />', {
@@ -138,9 +142,9 @@
             $el.appendTo($addList);
         }
 
-        var parent = document.querySelector(".collection");
+         var $parent = $(".collection");
         $addList.appendTo(fragment);
-        parent.appendChild(fragment);
+        $parent.append(fragment);
 }
 
 /**
@@ -215,13 +219,13 @@
 
         $filters.each(function(index) {
             $(this).on('change', function ($event) {
-            filterOption = document.querySelector('input[name="filter"]:checked').value; 
+            filterOption = $('input[name="filter"]:checked').val(); 
             changeDocument("filter");
         })});
 
         $sort.each(function(index) {
             $(this).on('change', function ($event) {
-            sortOption = document.querySelector('input[name="sort"]:checked').value; 
+            sortOption = $('input[name="sort"]:checked').val(); 
             changeDocument("sort");
         })});
 
