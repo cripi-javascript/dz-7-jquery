@@ -1,17 +1,16 @@
 ﻿$(function (exports) {
     "use strict";
 
-    var ListOfEvents = new Events();
-    var sortedList = new Events();
-
-    var filterOption = "all";
-    var sortOption = "without";
+    var ListOfEvents = new Events(),
+        sortedList = new Events(),
+        filterOption = "all",
+        sortOption = "without";
 
     $(document.body).on('load', initialise());
 
 /**
     * Загружает свое состояние с сервера
-    * при отсутсвии соединения/страницы на сервере пытается подключиться через 5 минут снова
+    * при отсутствии соединения/страницы на сервере пытается подключиться через 5 минут снова
     *
 */
     function initialise() {
@@ -19,29 +18,28 @@
         $.ajax({
             dataType: 'json',
             url: 'http://yunnii.github.com/dz-7-jquery/current-event.json',
-            success: function(jqXHR) {
-                for (var i = 0; i < jqXHR.length; i++)
-                {
-                    var newEvent = new Event(jqXHR[i]).validate();
+            success: function (jqXHR) {
+                var i, newEvent;
+
+                for (i = 0; i < jqXHR.length; i++) {
+                    newEvent = new Event(jqXHR[i]).validate();
                     ListOfEvents = ListOfEvents.add(newEvent);
-                };
+                }
                 changeDocument("sort");
                 addListener();
             },
-            error: function() {
-                if (error === "error") {
-                    $('#notifyError').show();
-                    return;
-                }
-            }})
-            .always(function() { 
-                    $("#notify").hide(); 
-                });
-        }
-
+            error: function () {
+                $('#notifyError').show();
+                return;
+            }
+        })
+            .always(function () {
+                $("#notify").hide();
+            });
+    }
 /**
  * Добавляет новое событие в список. Если установлены опции фильтрации и сортировки 
- * - то располагает элменты на странице, в с-ии с ними
+ * - то располагает элементы на странице, в с-ии с ними
  *
 */
     function preventDefault() {
@@ -54,9 +52,9 @@
             description = $("#description").val(),
             remindTime = $("#remindTime").val();
 
-        if (!validateTitle(name, $('#title_help'))) { alert("Событие не было добавлено. Ошибка"); return; };
-        if (!validateDate(start, $('#from_help'))) { alert("Событие не было добавлено. Ошибка"); return; };
-        if (!validateNumber(remindTime, $('#remindTime_help'))) { alert("Событие не было добавлено. Ошибка"); return; };
+        if (!validateTitle(name, $('#title_help'))) { alert("Событие не было добавлено. Ошибка"); return; }
+        if (!validateDate(start, $('#from_help'))) { alert("Событие не было добавлено. Ошибка"); return; }
+        if (!validateNumber(remindTime, $('#remindTime_help'))) { alert("Событие не было добавлено. Ошибка"); return; }
 
         var element = new Event({
                 name: name,
@@ -74,18 +72,19 @@
             type: 'POST',
             url: 'http://yunnii.github.com/dz-7-jquery/current-event.json',
             data: result.serialise(),
-            error: function() {
+            error: function () {
               /*if (error === "error") {
                     alert("Не могу подключиться к северу. Попробуйте позже");
                     return;
                 }*/
-            }})
-            .always(function() {
+            }
+        })
+            .always(function () {
                 ListOfEvents = result;
                 changeDocument("sort");
                 document.forms["form"].reset();
             });
-    };
+    }
 
     function filterEvents(listEvents) {
         switch (filterOption) {
@@ -127,14 +126,15 @@
             .addClass("events");
 
         var fragment = document.createDocumentFragment();
+
         if (changeType === "sort") {
             sortedList = sortEvents(ListOfEvents);
         }
-        var filterList = filterEvents(sortedList);
+        var filterList = filterEvents(sortedList),
+            length = filterList.length(),
+            i;
 
-        var length = filterList.length();
-
-        for (var i = 0; i < length; i++)
+        for (i = 0; i < length; i++)
         {
             var element = filterList.items[i];
             var $el = addLiElement(element);
@@ -155,35 +155,34 @@
 */
 
     function addLiElement (element) {
-        var $el = $('<li />', {
-            className: 'event_item'
-        });
+        var $el = $('<li />')
+            .addClass("event_item"),
 
-        var $name = $('<div />', {
+            $name = $('<div />', {
             text: "Название: " + element.name
-        }).appendTo($el);
+        }).appendTo($el),
 
-        var $start = $('<div />', {
+            $start = $('<div />', {
             text: "Начало: " + element.start
-        }).appendTo($el);
+        }).appendTo($el),
 
-        var $end = $('<div />', {
+            $end = $('<div />', {
             text: "Окончание: " + element.end
-        }).appendTo($el);
+        }).appendTo($el),
 
-        var $location = $('<div />', {
+            $location = $('<div />', {
             text: "Местоположение: " + element.location
-        }).appendTo($el);
+        }).appendTo($el),
 
-        var $remindTime = $('<div />', {
+            $remindTime = $('<div />', {
             text: "Напомнить за: " + element.remindTime + "минут"
-        }).appendTo($el);
+        }).appendTo($el),
 
-        var $description = $('<div />', {
+            $description = $('<div />', {
             text: "Описание: " + element.description
-        }).appendTo($el);
+        }).appendTo($el),
 
-        var $raiting = $('<div />', {
+            $raiting = $('<div />', {
             text: "Рейтинг: " + element.raiting
         }).appendTo($el);
 
