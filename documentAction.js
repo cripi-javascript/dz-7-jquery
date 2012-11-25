@@ -6,7 +6,7 @@
         filterOption = "all",
         sortOption = "without";
 
-    $(document.body).on('load', initialise());
+    $(document).ready(initialise);
 
 /**
     * Загружает свое состояние с сервера
@@ -15,26 +15,20 @@
 */
     function initialise() {
 
-        $.ajax({
-            dataType: 'json',
-            url: 'http://yunnii.github.com/dz-7-jquery/current-event.json',
-            success: function (jqXHR) {
+        $( '.date' ).datepicker();
+
+        $.getJSON('current-event.json')
+            .complete(function () { $("#notify").hide(); })
+            .error(function () { $('#notifyError').show(); })
+            .success(function (result) {
                 var i, newEvent;
 
-                for (i = 0; i < jqXHR.length; i++) {
-                    newEvent = new Event(jqXHR[i]).validate();
+                for (i = 0; i < result.length; i++) {
+                    newEvent = new Event(result[i]).validate();
                     ListOfEvents = ListOfEvents.add(newEvent);
                 }
                 changeDocument("sort");
                 addListener();
-            },
-            error: function () {
-                $('#notifyError').show();
-                return;
-            }
-        })
-            .always(function () {
-                $("#notify").hide();
             });
     }
 /**
@@ -68,18 +62,14 @@
 
         var result = ListOfEvents.add(element);
 
-        $.ajax({
-            type: 'POST',
-            url: 'http://yunnii.github.com/dz-7-jquery/current-event.json',
-            data: result.serialise(),
-            error: function () {
+        $.post('current-event.json', result.serialise())
+            .error( function () {
               /*if (error === "error") {
                     alert("Не могу подключиться к северу. Попробуйте позже");
                     return;
                 }*/
-            }
-        })
-            .always(function () {
+            })
+            .complete(function () {
                 ListOfEvents = result;
                 changeDocument("sort");
                 document.forms["form"].reset();
@@ -97,7 +87,7 @@
         }
     }
 
-    function sortEvents(listEvents) {
+    function sortEvents() {
         switch (sortOption) {
         case "byName":
             return ListOfEvents.sortByName();
@@ -128,7 +118,7 @@
         var fragment = document.createDocumentFragment();
 
         if (changeType === "sort") {
-            sortedList = sortEvents(ListOfEvents);
+            sortedList = sortEvents();
         }
         var filterList = filterEvents(sortedList),
             length = filterList.length(),
@@ -193,42 +183,36 @@
  * Навешивает обработчики событий на страницу
 */
      function addListener() {
-        var $name = $("#title");
-        var $start = $("#from");
-        var $remindTime = $("#remindTime");
-        var $filters = $('.filter');
-        var $sort = $('.sort');
-        var $button = $("#addButton");
 
-        $name.on('blur', function($event) {
+        $("#title").on('blur', function($event) {
             var cur = $event.currentTarget;
             validateTitle(cur.value, $('#title_help'));
         });
 
-        $start.on('blur', function ($event) {
+        $("#from").on('blur', function ($event) {
             var cur = $event.currentTarget;
             validateDate(cur.value, $('#from_help'));
         });
 
-        $remindTime.on('blur', function ($event) {
+        $("#remindTime").on('blur', function ($event) {
             var cur = $event.currentTarget;
-            validateNumber(remindTime.value, $('#remindTime_help'));
+            validateNumber(cur.value, $('#remindTime_help'));
         });
 
-        $filters.each(function(index) {
+        $('.filter').each(function(index) {
             $(this).on('change', function ($event) {
             filterOption = $('input[name="filter"]:checked').val(); 
             changeDocument("filter");
         })});
 
-        $sort.each(function(index) {
+        $('.sort').each(function(index) {
             $(this).on('change', function ($event) {
             sortOption = $('input[name="sort"]:checked').val(); 
             changeDocument("sort");
         })});
 
 
-        $button.on('click', preventDefault);
+        $("#addButton").on('click', preventDefault);
     }
 
 }(window));

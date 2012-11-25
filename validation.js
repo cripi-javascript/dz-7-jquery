@@ -14,7 +14,7 @@
 
     exports.validateTitle = function (input, helpText) {
 
-        if (input.length === 0) {
+        if ($.trim(input).length === 0) {
             showError(true, helpText);
             return false;
         }
@@ -36,16 +36,9 @@
 
     exports.validateNumber = function (input, helpText) {
 
-        if (typeof +input !== "number") {
-            if (typeof input !== "undefined") {
-                showError(true, helpText);
-                return false;
-            }
-        }
-
-        if (+input < 0) {
+        if ($.isNumeric(+input) || +input < 0) {
             showError(true, helpText);
-            return false;
+                return false;
         }
 
         showError(false, helpText);
