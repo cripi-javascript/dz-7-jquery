@@ -36,7 +36,7 @@
 
     exports.validateNumber = function (input, helpText) {
 
-        if ($.isNumeric(+input) || +input < 0) {
+        if (! $.isNumeric(+input) || +input < 0) {
             showError(true, helpText);
                 return false;
         }
