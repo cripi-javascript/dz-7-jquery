@@ -24,7 +24,7 @@ Collection.prototype.constructor = Collection;
  *
  */
 Collection.prototype.serialise = function () {
-    return JSON.stringify(this.items, 3);
+    return JSON.stringify(this.items, null, '    ');
 }
 
 /**
