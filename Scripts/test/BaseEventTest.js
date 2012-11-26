@@ -11,7 +11,7 @@ test('add()', function () {
     Date = function () {
         return new RealDate("September 13, 2012 12:00:00");
     };
-    testBase = testBase.add(new Event({"start": new Date(1),"end": new Date(2), "location":{"nameLocation":"123", "gps":{"x":1,"y":2}}}));
+    testBase = testBase.add(new Event({"start": new Date(1),"end": new Date(2), "location":{"$nameLocation":"123", "gps":{"x":1,"y":2}}}));
     equal(testBase.items.length, 1);
     ok(testBase instanceof BaseEvent);
     ok(testBase instanceof Collection);
@@ -200,13 +200,13 @@ function initTestBase() {
         programmerDay = new Event({"start": programmerDayDateStart, "end": programmerDayDateFinish, "name": 'День программмиста', "id": 16}),    
         knowDayDateStart = new Date("September 1, 2012 00:00:01"),
         knowDayDateDateFinish = new Date("September 1, 2012 23:59:59"),
-        knowDayDate = new Event({"start": knowDayDateStart, "end": knowDayDateDateFinish, "name": 'День знаний', "id": 17, "stars": 1}),
+        knowDayDate = new Event({"start": knowDayDateStart, "end": knowDayDateDateFinish, "name": 'День знаний', "id": 17, "$stars": 1}),
         teacherDayDateStart = new Date("October 5, 2012 00:00:00"),
         teacherDayDateFinish = new Date("October 5, 2012 23:59:59"),
-        teacherDay = new Event({"start": teacherDayDateStart, "end": teacherDayDateFinish, "name": 'День учителя', "id": 18, "stars": 5}),
+        teacherDay = new Event({"start": teacherDayDateStart, "end": teacherDayDateFinish, "name": 'День учителя', "id": 18, "$stars": 5}),
         securiteDayDateStart = new Date("November 5, 2012 00:00:00"),
         securiteDayDateFinish = new Date("November 5, 2012 23:59:59"),
-        securiteDay = new Event({"start": securiteDayDateStart, "end": securiteDayDateFinish, "name": 'День защиты информации', "id": 19, "stars": 3}),
+        securiteDay = new Event({"start": securiteDayDateStart, "end": securiteDayDateFinish, "name": 'День защиты информации', "id": 19, "$stars": 3}),
         nationUnitionDateStart = new Date("November 4, 2012 00:00:00"),
         nationUnitionDateDateFinish = new Date("November 4, 2012 23:59:59"),
         nationUnition = new Event({"start": nationUnitionDateStart, "end": nationUnitionDateDateFinish, "name": 'День нароного единства', "id": 20});

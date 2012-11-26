@@ -1,6 +1,29 @@
 ﻿/*global Model: true*/
 (function (toExport) {
     "use strict";
+    /**
+     * function генерирует случайный hex из четырех символов
+     * @return {String}
+     */
+    var randomHex4 = function ()
+    {
+        return Math.floor(
+            Math.random() * 0x10000 /* 65536 */
+        ).toString(16);
+    };
+    /**
+     * function генерирует guid в виде строки
+     * @return {String}
+     */
+    var createGUID = function () {
+        return (
+            randomHex4() + randomHex4() + "-" +
+                randomHex4() + "-" +
+                randomHex4() + "-" +
+                randomHex4() + "-" +
+                randomHex4() + randomHex4() + randomHex4()
+            );
+    }
 /**
  * Создает новое событие в календаре
  * @class Событие в календаре
@@ -13,11 +36,9 @@
 */
     var Event = function Event(data) {
         "use strict";
-        this.id = Math.random();
-        this.location = {
-            "gps": {x: 0, y: 0},
-            "nameLocation": "Earth"
-        };
+        this.id = createGUID();
+        this.gps =  {x: 0, y: 0};
+        this.name = "Что-то";
         this.stars =  0;
         this.cost =  0;
         this.parties = [];
@@ -28,7 +49,7 @@
         if (typeof data.start === "string") {
             this.end = new Date(data.end);
         }
-        this.validate(this);
+        this.isValidate(this);
         this.setLocation(this.location.gps, this.location.nameLocation);
         this.stars = this.leaveMark(this.stars);
     }
@@ -46,7 +67,7 @@
  *
  * @return {bool}
 */
-    Event.prototype.dateValidator = function (date) {
+    var dateValidator = function (date) {
         "use strict";
         if (Object.prototype.toString.call(date) === "[object Date]") {
             if (!isNaN(date.getTime())) {
@@ -56,78 +77,187 @@
         return false;
     };
 /**
- * @function Проверяет на корректность координаты
- * @private
  *
- * @field coordinate координаты в дву мерном пространстве
- * @field name название события
- * @filed {Boolean}
-*/
-    var isCorrectedCoordinate = function (coordinate, name) {
-            var isType = typeof coordinate !== "undefined" && typeof name === "string";
-            if (!isType) {
-                return false;
+ * @function проверяет корректный ли параметр содержащий Id события
+ * @param {Object} event
+ * @return {Array} сообщения с ошибками
+ */
+    var isValidateId = function (event) {
+        var errors = [];
+        if (typeof event.id !== "string") {
+            errors.push({
+                "who": "id",
+                "isCritical": true,
+                "text": "id - это строка содержащая GUID"
+            });
+        }
+        else {
+            if (event.id.length !== 36) {
+                errors.push({
+                    "who": "id",
+                    "isCritical": true,
+                    "text": "Id = имеет длину ровно 36 символов"
+                });
             }
-            var isX = typeof coordinate.x === "number";
-            var isY = typeof coordinate.y === "number";
-            return isX && isY;
         }
+    }
 /**
- * @function set-ер установления локации события
  *
- * @field gps координаты в дву мерном пространстве
- * @field название события
-*/
-    Event.prototype.setLocation = function (gps, name) {
-        
-        if (isCorrectedCoordinate(gps, name)) {
-            this.location.gps = gps;
-            this.location.nameLocation = name;
+ * @function проверяет корректный ли параметр интервала времени события
+ * @param {Object} event
+ * @return {Array} сообщения с ошибками
+ */
+    var isValidateTimeInterval = function (event) {
+        var errors = [];
+        if (!dateValidator(event.start)) {
+            errors.push({
+                "who": "timeInterval",
+                "isCritical": true,
+                "text": "Дата начала события задана не корректно"
+            });
+        }
+        if (!dateValidator(event.end)) {
+            errors.push({
+                "who": "timeInterval",
+                "isCritical": true,
+                "text": "Дата конца событий задана не корректно"
+            });
+        }
+        if (errors.length !== 0) {
+            if (event.start.getTime() > event.end.getTime())
+            errors.push({
+                "who": "timeInterval",
+                "isCritical": true,
+                "text": "Дата начала и конца события перепутаны местами"
+            });
+        }
+        return errors;
+    }
+/**
+ *
+ * @function проверяет корректный ли параметры содержащие координаты события
+ * @param {Object} event
+ * @return {Array} сообщения с ошибками
+ */
+    var isValidateGps = function (event) {
+        var errors = [];
+
+        if (!$.isNumeric(event.gps.x)) {
+            errors.push({
+                "who": "gps",
+                "isCritical": false,
+                "text": "Координата X - не число"
+            });
+        }
+        if (!$.isNumeric(event.gps.y)) {
+            errors.push({
+                "who": "gps",
+                "isCritical": false,
+                "text": "Координата Y - не число"
+            });
+        }
+        if (errors.length === 2) {
+            errors = [{
+                "who": "gps",
+                "isCritical": false,
+                "text": "Обе координаты содержат не числа"
+            }];
+        }
+        return errors;
+    }
+/**
+ *
+ * @function проверяет корректный ли параметр названия события
+ * @param {Object} event
+ * @return {Array} сообщения с ошибками
+ */
+    var isValidateName = function (event) {
+        var errors = [];
+        if (event.name.length !== 0 && event.name.length < 100) {
+            errors.push({
+                "who": "name",
+                "isCritical": true,
+                "text": "Название события должно содержать имя от 0 до 100 символов"
+            });
+        }
+        return errors;
+    }
+/**
+ *
+ * @function проверяет корректный ли параметр рейтинга события
+ * @param {Object} event
+ * @return {Array} сообщения с ошибками
+ */
+    var isValidateStars = function (event) {
+        var errors = [];
+        if (!$.isNumeric(event.stars)) {
+            errors.push({
+                "who": "stars",
+                "isCritical": false,
+                "text": "В поле должно быть введено число"
+            });
         } else {
-            this.location = {
-                "gps" : {"x" : 0, "y" : 0},
-                "nameLocation" : "Earth"
-            };
+            if (event.stars < 0 || event.stars > 5) {
+                errors.push({
+                    "who": "stars",
+                    "isCritical": false,
+                    "text": "Количество звезд от 0 до 5"
+                });
+            }
+            else {
+                if (Math.floor(event.stars) !== event.stars) {
+                    errors.push({
+                        "who": "stars",
+                        "isCritical": false,
+                        "text": "Количество звезд целое число"
+                    });
+                }
+
+            }
         }
+        return errors;
     };
 /**
- * @function Коррекция значения рейтинга
  *
- * @return {Number} 0,1,2,3,4,5
-*/
-    Event.prototype.leaveMark = function (stars) {
-        if (isNaN(parseFloat(stars)) ||
-            !isFinite(stars) ||
-            stars < 0) {
-            stars = 0;
+ * @function проверяет корректный ли параметр стоимости посещения
+ * @param {Object} event
+ * @return {Array} сообщения с ошибками
+ */
+    var isValidateCost = function (event) {
+        var errors = [];
+        if ($.isNumeric(event.cost)) {
+            errors.push({
+                "who": "cost",
+                "isCritical": false,
+                "text": "В этом поле должно быть число"
+            });
         }
-        if (stars > 5) {
-            stars = 5;
+        else {
+            if (event.cost < 0) {
+                errors.push({
+                    "who": "cost",
+                    "isCritical": false,
+                    "text": "Цена за участие не может быть отрицательной"
+                });
+            }
         }
-        stars = Math.floor(stars); 
-        return stars;
-    };
+        return errors;
+    }
 /**
  * @function Проверяет объект на корректность
  *
- * @field {Event} event - то что проверяем
+ * @field {Object} event - то что проверяемый
+ * @return {Array} сообщение с ошибками.
 */
-    Event.prototype.validate = function (event) {
-        if (event.cost < 0) {
-            throw new Error("Цена за вход не может быть отрицательной");
-        }
-        if (!Array.isArray(event.parties)) {
-            throw new Error("Участники - это массив");
-        }
-        var existsSomePartyWithoutNameField = event.parties.some(function (party) {
-            return !party.name;
-        });
-        if (existsSomePartyWithoutNameField) {
-            throw new Error("У одного из участников нет поля <ИМЯ>");
-        }
-        if (event.end < event.start) {
-            throw new Error("Даты начала и конца перепутаны");
-        }
+    Event.prototype.isValidate = function (event) {
+        return [].concat(
+            isValidateId(event),
+            isValidateTimeInterval(event),
+            isValidateName(event),
+            isValidateGps(event),
+            isValidateCost(event),
+            isValidateStars(event)
+        );
     };
 /**
  * @function Функция, печатающие значение локационных данных объекта

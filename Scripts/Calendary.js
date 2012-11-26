@@ -6,7 +6,7 @@
 /**
  * @namespace Пространство имен для календаря
  *
- * @field {EventFactory}  объект, хранящий ссылки на inputы необходимые для создания нового события 
+ * @field {EventFactory}  объект, хранящий ссылки на inputы необходимые для создания нового события
  * @field eventList  ссылка на дом объект, хранящий список событий
  * @field eventBase все события пользователя
  * @field errorManager объект хранящий функции для валидации полей в дом и хранящий в себе некоторые тривиальные операции
@@ -14,13 +14,17 @@
  */
     var Calendary = function () {
         this.whois = "Alex.Mangin";
+        var $timeInterval = $("#EventFactoryTimeInterval");
+        var $coordinateMenu = $("#EventFactoryCoordinate");
         this.EventFactory = {
-            "timer" : document.getElementById("NewEventTimeInterval"),
-            "nameLocation" : document.getElementById("NewEventNameLocation"),
-            "coordinate" : document.getElementById("NewEventCoordinate"),
-            "stars" : document.getElementById("NewEventStars"),
-            "cost" : document.getElementById("NewEventCost"),
-            "parties" : document.querySelector("#NewEventPartiesList ol")
+            "$IntervalStartDate" : $timeInterval.find(".StartDate"),
+            "$IntervalEndDate" : $timeInterval.find(".EndDate"),
+            "nameLocation" : $("#EventFactoryNameLocation"),
+            "$coordinateX" : $coordinateMenu.find(".XCoordinate"),
+            "$coordinateY" : $coordinateMenu.find(".YCoordinate"),
+            "$stars" : $("#EventFactoryStars"),
+            "$cost" : $("#EventFactoryCost"),
+            "$parties" : $("#EventFactoryPartiesList").find("ol")
         };
         this.eventList = document.getElementById("eventList");
         this.errorManager = new CalendaryErrorManager("Error");
@@ -72,7 +76,7 @@
                     events.push(new Event(objEvents[i]));
                 }
                 currentCalendary.eventBase = new BaseEvent(events);
-                currentCalendary.UpdateShowList();
+                currentCalendary.updateShowList();
             }
         })
     }
@@ -100,7 +104,7 @@
                 return;
             }
         }
-        partyList = this.EventFactory.parties.querySelectorAll(" input");
+        partyList = this.EventFactory.$parties.querySelectorAll(" input");
         for ( i = 0; i < partyList.length; i = i + 1) {
             if (partyList[i].value && partyList[i].value !== "") {
                 parties.push({"name" : partyList[i].value});
@@ -110,25 +114,25 @@
             "id" : Math.random(),
             "location" : {
                 "gps": {
-                    "x": parseFloat(this.EventFactory.coordinate.querySelector(" .XCoordinate").value),
-                    "y":  parseFloat(this.EventFactory.coordinate.querySelector(" .YCoordinate").value)
+                    "x": parseFloat(this.EventFactory.$coordinate.querySelector(" .XCoordinate").value),
+                    "y":  parseFloat(this.EventFactory.$coordinate.querySelector(" .YCoordinate").value)
                 },
                 "nameLocation": this.EventFactory.nameLocation.querySelector("input").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '')
             },
-            "stars" : parseFloat(this.EventFactory.stars.querySelector("input").value),
-            "cost" :  parseFloat(this.EventFactory.cost.querySelector("input").value),
-            "start": new Date(this.EventFactory.timer.querySelector(".StartDate").value),
-            "end": new Date(this.EventFactory.timer.querySelector(".FinishDate").value),
+            "stars" : parseFloat(this.EventFactory.$stars.querySelector("input").value),
+            "cost" :  parseFloat(this.EventFactory.$cost.querySelector("input").value),
+            "start": new Date(this.EventFactory.$timer.querySelector(".StartDate").value),
+            "end": new Date(this.EventFactory.$timer.querySelector(".FinishDate").value),
             "parties" : parties
         }
-        if (DOMValidator.isCoordinate(this.EventFactory.coordinate)) {
+        if (DOMValidator.isCoordinate(this.EventFactory.$coordinate)) {
             eventDate.location.gps.x = 0;
             eventDate.location.gps.y = 0;
         }
-        if (DOMValidator.isStars(this.EventFactory.stars)) {
+        if (DOMValidator.isStars(this.EventFactory.$stars)) {
             eventDate.stars = 0;
         }
-        if (DOMValidator.isPositiveNumber(this.EventFactory.cost)) {
+        if (DOMValidator.isPositiveNumber(this.EventFactory.$cost)) {
             eventDate.cost = 0;
         }
         var newEvent = new Event(eventDate);
@@ -144,7 +148,7 @@
         for (i = 0; i < errors.length; i = i + 1) {
             errors[i].parentElement.removeChild(errors[i]);
         }
-        this.errorManager.removeAllChildren(this.EventFactory.parties);
+        this.errorManager.removeAllChildren(this.EventFactory.$parties);
         docfrag = document.createDocumentFragment()
         io = document.createElement("li");
         input = document.createElement("input");
@@ -153,13 +157,13 @@
         for (i = 0; i < 3; i = i + 1) {
             docfrag.appendChild(io.cloneNode(true));
         }
-        this.EventFactory.parties.appendChild(docfrag);
+        this.EventFactory.$parties.appendChild(docfrag);
     }
 
 /**
  * @function - функция обновляет отфильтрованный список со всеми наложенными фильтрами
 */
-    Calendary.prototype.UpdateShowList = function () {
+    Calendary.prototype.updateShowList = function () {
         var createEventRow = function (number, event) {
             var row = (function createRow() {
                 var rowTable = document.createElement("tr"),
@@ -179,7 +183,7 @@
             row.children[2].appendChild(document.createTextNode(event.starsToString()));
             row.children[3].appendChild(document.createTextNode(event.start.toDateString()));
             row.children[4].appendChild(document.createTextNode(event.end.toDateString()));
-            row.children[5].appendChild(document.createTextNode(event.cost + " $"));
+            row.children[5].appendChild(document.createTextNode(event.$cost + " $"));
             listParty = document.createElement("select");
             for (i = 0; i < event.parties.length; i += 1) {
                 aDOMParty = document.createElement("option");
@@ -208,31 +212,31 @@
  * @function функция вызывает обработчики ошибок необходимых полей
 */
     Calendary.prototype.changeNeed = function () {
-        this.errorManager.changeTime(this.EventFactory.timer);
+        this.errorManager.changeTime(this.EventFactory.$timer);
         this.errorManager.changeImportantStringField(this.EventFactory.nameLocation);
     }
 /**
  * @function функция вызывает обработчики ошибок необязательных полей
 */
     Calendary.prototype.changeAddition = function () {
-        this.errorManager.changeCoordinate(this.EventFactory.coordinate);
-        this.errorManager.changePositiveNumber(this.EventFactory.cost);
-        this.errorManager.changeStars(this.EventFactory.stars);
+        this.errorManager.changeCoordinate(this.EventFactory.$coordinate);
+        this.errorManager.changePositiveNumber(this.EventFactory.$cost);
+        this.errorManager.changeStars(this.EventFactory.$stars);
     }
 /**
  * @function функция проверяет корректность необходимых полей
 */
     Calendary.prototype.isCorrecteNeedFields = function () {
-        return DOMValidator.isTimeInterval(this.EventFactory.timer) === "" && 
-            DOMValidator.isImportantStringField(this.EventFactory.nameLocation) === ""; 
+        return DOMValidator.isTimeInterval(this.EventFactory.$timer) === "" &&
+            DOMValidator.isImportantStringField(this.EventFactory.nameLocation) === "";
     }
 /**
  * @function функция проверяет корректность дополнительных полей
 */
     Calendary.prototype.isCorrecteAdditionFields = function () {
-        return DOMValidator.isCoordinate(this.EventFactory.coordinate) === "" &&
-            DOMValidator.isStars(this.EventFactory.stars) === "" &&
-            DOMValidator.isPositiveNumber(this.EventFactory.cost) === "";
+        return DOMValidator.isCoordinate(this.EventFactory.$coordinate) === "" &&
+            DOMValidator.isStars(this.EventFactory.$stars) === "" &&
+            DOMValidator.isPositiveNumber(this.EventFactory.$cost) === "";
     }
 /**
  * @function функция добавляет дополнительное поле в коллекцию друзей

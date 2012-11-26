@@ -23,17 +23,17 @@ test('Create event', function () {
         'Error("Даты начала и конца перепутаны")'
         );
     throws(function () {
-        new Event({"cost": -1});
+        new Event({"$cost": -1});
     },
         'Error("Цена за вход не может быть отрицательной")'
         );
     throws(function () {
-        new Event({"parties": "NoArray"});
+        new Event({"$parties": "NoArray"});
     },
         'Error("Участники - это массив")'
         );
     throws(function () {
-        new Event({"parties": ["sds"]});
+        new Event({"$parties": ["sds"]});
     },
         'Error("У одного из участников нет поля <ИМЯ>")'
         );
@@ -83,7 +83,7 @@ test('Gps - undef', function () {
     testEvent.setLocation(gps, "");
     deepEqual(testEvent.location, {
         "gps": {"x": 0, "y": 0},
-        "nameLocation": "Earth"
+        "$nameLocation": "Earth"
     }, "GPS - некорректный => установить значения по умолчанию");
 });
 test('Передача числа болешьшего 5', function () {
@@ -92,7 +92,7 @@ test('Передача числа болешьшего 5', function () {
     testEvent.setLocation(gps, "");
     deepEqual(testEvent.location, {
         "gps": {"x": 0, "y": 0},
-        "nameLocation": "Earth"
+        "$nameLocation": "Earth"
     }, "GPS - некорректный => установить значения по умолчанию");
 });
 test('Передача объекта не являющимся gps', function () {
@@ -101,7 +101,7 @@ test('Передача объекта не являющимся gps', function (
     testEvent.setLocation("Not gps", "");
     deepEqual(testEvent.location, {
         "gps": {"x": 0, "y": 0},
-        "nameLocation": "Earth"
+        "$nameLocation": "Earth"
     }, "GPS - не содержит X  или Y => установить значения по умолчанию");
 });
 test('Имя места - не строка', function () {
@@ -110,7 +110,7 @@ test('Имя места - не строка', function () {
     testEvent.setLocation({"x": 0, "y": 0}, []);
     deepEqual(testEvent.location, {
         "gps": {"x": 0, "y": 0},
-        "nameLocation": "Earth"
+        "$nameLocation": "Earth"
     }, "Название места не строка => установить значения по умолчанию");
 });
 test('Корректный тест', function () {
@@ -119,6 +119,6 @@ test('Корректный тест', function () {
     testEvent.setLocation({"x": 1, "y": 2}, "Moon");
     deepEqual(testEvent.location, {
         "gps": {"x": 1, "y": 2},
-        "nameLocation": "Moon"
+        "$nameLocation": "Moon"
     }, "GPS - не содержит X  или Y => установить значения по умолчанию");
 });

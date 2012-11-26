@@ -174,10 +174,10 @@
  * @return {Numeric}
  */
     var starsComparer = function compare(a, b) {
-            if (a.stars > b.stars) {
+            if (a.$stars > b.$stars) {
                 return -1;
             }
-            if (a.stars < b.stars) {
+            if (a.$stars < b.$stars) {
                 return 1;
             }
             return 0;

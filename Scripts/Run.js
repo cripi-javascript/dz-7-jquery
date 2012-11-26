@@ -1,43 +1,45 @@
 /**
- * ��������� ����������� �������
- *
  * @author Alex.Mangin
  */
 (function (){
-    var calendary = new Calendary();
-    calendary.LoadChange();
-    calendary.EventFactory.timer.addEventListener('blur', function() {
-        calendary.errorManager.changeTime(this);
-    }, true);
-    calendary.EventFactory.nameLocation.addEventListener('blur', function() {
-        calendary.errorManager.changeImportantStringField(this);
-    }, true);
-    calendary.EventFactory.coordinate.addEventListener('blur', function() {
-        calendary.errorManager.changeCoordinate(this);
-    }, true);
-    calendary.EventFactory.stars.addEventListener('blur', function() {
-        calendary.errorManager.changeStars(this);
-    }, true);
-    calendary.EventFactory.cost.addEventListener('blur', function() {
-        calendary.errorManager.changePositiveNumber(this);
-    }, true);
-    document.getElementById("SubmitNewEventButton").addEventListener('click', function() {
-        calendary.CreateEvent();
-        calendary.UpdateShowList();
-    }, false);
-    document.getElementById("AddFriend").addEventListener('click', function() {
-        calendary.addFriend(calendary.EventFactory.parties);
-    }, false);
-    var filterRadios =document.querySelectorAll("#FilterEventList input[type = radio]");
-    for(var i = 0; i < filterRadios.length; i = i + 1) {
-        filterRadios[i].addEventListener('click', function() {
-            calendary.updateFilter();
-            calendary.UpdateShowList();
+    var currentCalendary = new Calendary(),
+        changeTime = function() {
+            currentCalendary.errorManager.changeTime(this);
+        },
+        changeCoordinate = function() {
+            currentCalendary.errorManager.changeCoordinate(this);
+        };
+    currentCalendary.LoadChange();
+    currentCalendary.EventFactory.$IntervalStartDate.on('blur', changeTime);
+    currentCalendary.EventFactory.$IntervalEndDate.on('blur', changeTime);
+    currentCalendary.EventFactory.nameLocation.on('blur', function() {
+        currentCalendary.errorManager.changeImportantStringField(this);
+    });
+    currentCalendary.EventFactory.$coordinateX.on('blur', changeCoordinate);
+    currentCalendary.EventFactory.$coordinateY.on('blur', changeCoordinate);
+    currentCalendary.EventFactory.$stars.on('blur', function() {
+        currentCalendary.errorManager.changeStars(this);
+    });
+    currentCalendary.EventFactory.$cost.on('blur', function() {
+        currentCalendary.errorManager.changePositiveNumber(this);
+    });
+
+    $("SubmitNewEventButton").on('click', function() {
+        currentCalendary.CreateEvent();
+        currentCalendary.updateShowList();
+    });
+    $("AddFriend").on('click', function() {
+        currentCalendary.addFriend(currentCalendary.EventFactory.$parties);
+    });
+
+    $("#FilterEventList").find("input").find("[type = radio]").each(function ($filterEl) {
+        $filterEl.on('click', function() {
+            currentCalendary.updateFilter();
+            currentCalendary.updateShowList();
         })
-    }
-    
-    document.getElementById("FIlterFreshPeopleList").addEventListener('blur', function() {
-        calendary.updateFilter();
-        calendary.UpdateShowList();
-    }, true);
+    });
+    $("FilterFreshPeopleList").on('blur', function() {
+        currentCalendary.updateFilter();
+        currentCalendary.updateShowList();
+    });
 }());
