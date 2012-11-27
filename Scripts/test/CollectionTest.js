@@ -1,12 +1,4 @@
-﻿/*global module: true*/
-/*global test: true*/
-/*global ok: true*/
-/*global equal: true*/
-/*global deepEqual: true*/
-/*global initTestBase: true*/
-/*global Event: true*/
-/*global Collection: true*/
-module("Конструктор");
+﻿module("Конструктор");
 test("Конструктор", function () {
     "use strict";
     var newCollection = new Collection([1, 2, 3, 4]);

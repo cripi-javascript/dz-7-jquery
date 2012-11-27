@@ -5,7 +5,7 @@
  * Создает оболочка для хранения массива объектов с операциями по извлечению более конкретных элементов
  * @class Оболочка для храения массива объектов
  *
- * @param {Array} элементы коллекции
+ * @param {Array} otherItems элементы коллекции
 */
     var Collection = function (otherItems) {
         "use strict";
@@ -21,11 +21,11 @@
 /**
  * @field {Collection} хранит ссылку на родной конструктор
 */
-    Collection.prototype.constructor = Collection
+    Collection.prototype.constructor = Collection;
 /**
  * @function создает новую коллекцию элементов с теме же элементами + с новым элементом obj
  *
- * @return {instanceof this.constructor}
+ * @return {Object} instanceof this.constructor
 */
     Collection.prototype.add = function (obj) {
         var newEvents = this.items.concat([obj]);
@@ -34,9 +34,9 @@
 /**
  * @function создает новую коллекцию элементов с отфильтрованными элементами
  *
- * @param {Function} - делегат
+ * @param {Function} selector делегат
  *
- * @return {instanceof this.constructor}
+ * @return {Object} instanceof this.constructor
 */
     Collection.prototype.filter = function (selector) {
         var newItems = this.items.filter(selector);
@@ -45,10 +45,10 @@
 /**
 * @function создает новую коллекцию элементов с теме же элементами + с новым элементом obj
  *
- * @param {Function} - компаратор
- * @param {Function} - инвертировать, ли результат
+ * @param {Function} comparator компаратор
+ * @param {Function} isInvert инвертировать, ли результат
  *
- * @return {instanceof this.constructor}
+ * @return {Object} instanceof this.constructor
 */
     Collection.prototype.sortBy = function (comparator, isInvert) {
         var newItems = [].concat(this.items);

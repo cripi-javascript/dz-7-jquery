@@ -1,124 +1,126 @@
-﻿/*global module: true*/
-/*global test: true*/
-/*global ok: true*/
-/*global equal: true*/
-/*global deepEqual: true*/
-/*global initTestBase: true*/
-/*global Event: true*/
-/*global Collection: true*/
-/*global throws: true*/
-module("Tests of Event's constructor");
-test('Create event', function () {
+﻿module("Tests of Event's constructor");
+test('Проверка пустого конструктора Event', function () {
     "use strict";
-    var dateToString = function (currentTime) {
-        var month = currentTime.getMonth() + 1, day = currentTime.getDate(), year = currentTime.getFullYear();
-        return month + "/" + day + "/" + year;
-    }, currentTime = new Date(), testEvent = new Event({"start": currentTime});
-    equal(dateToString(testEvent.start), dateToString(currentTime));
-    testEvent = new Event({"start": new Date(1), "end": new Date(2)});
-    ok(testEvent.start.getTime() < testEvent.end.getTime());
-    throws(function () {
-        new Event({"start": new Date(2), "end": new Date(1)});
-    },
-        'Error("Даты начала и конца перепутаны")'
-        );
-    throws(function () {
-        new Event({"$cost": -1});
-    },
-        'Error("Цена за вход не может быть отрицательной")'
-        );
-    throws(function () {
-        new Event({"$parties": "NoArray"});
-    },
-        'Error("Участники - это массив")'
-        );
-    throws(function () {
-        new Event({"$parties": ["sds"]});
-    },
-        'Error("У одного из участников нет поля <ИМЯ>")'
-        );
-    equal(new Event({"stars": 2}).stars, 2, "При присваивании звезд произошла ошибка");
-    equal(new Event({"stars": 2.1}).stars, 2, "Функция устанавливающая звездочки не сработала");
+    var event = new Event();
+    ok(event instanceof Event);
+});
+test('Проверка не пустого конструктора Event', function () {
+    "use strict";
+    var event = new Event(new Event());
+    ok(event instanceof Event);
+});
+test('Начальное время не валидно', function () {
+    "use strict";
+    var event = new Event(),
+        error;
+    event.start = "Ой не время";
+    error = Event.isValidate(event);
+    equal(error.length, 1, "Ошибок больше, чем должно было быть");
+    equal(error[0].nameField, "start", "Ошибка возникла в другом поле");
+});
+test('Дата конца события не валидна', function () {
+    "use strict";
+    var event = new Event(),
+        error;
+    event.end = "Ой не время";
+    error = Event.isValidate(event);
+    equal(error.length, 1, "Ошибок больше, чем должно было быть");
+    equal(error[0].nameField, "end", "Ошибка возникла в другом поле");
+});
+test('Даты перепутаны местами', function () {
+    "use strict";
+    var event = new Event(),
+        error;
+    event.start = new Date(100);
+    event.end = new Date (1);
+    error = Event.isValidate(event);
+    equal(error.length, 2, "Ошибок больше или меньше, чем должно было быть");
+    equal(error[0].nameField, "start", "Ошибка возникла в другом поле");
+    equal(error[1].nameField, "end", "Ошибка возникла в другом поле");
+
+    event.start = new Date(1);
+    event.end = new Date (100);
+    error = Event.isValidate(event);
+    equal(error.length, 0, "Данные корректны!!! ошибки быть не должно")
+});
+test('Цена посещения положителеное число', function () {
+    "use strict";
+    var event = new Event(),
+        error;
+    event.cost = "Ой не число";
+    error = Event.isValidate(event);
+    equal(error.length, 1, "Ошибок больше или меньше, чем должно было быть");
+    equal(error[0].nameField, "cost", "Ошибка возникла в другом поле");
+
+    event.cost = -123;
+    error = Event.isValidate(event);
+    equal(error.length, 1, "Ошибок больше или меньше, чем должно было быть");
+    equal(error[0].nameField, "cost", "Ошибка возникла в другом поле");
+
+    event.cost = 100;
+    error = Event.isValidate(event);
+    equal(error.length, 0, "Данные корректны!!! ошибки быть не должно");
+});
+test('Название события от 1 до 18 символов', function () {
+    "use strict";
+    var event = new Event(),
+        error;
+    event.name = "";
+    error = Event.isValidate(event);
+    equal(error.length, 1, "Ошибок больше или меньше, чем должно было быть");
+    equal(error[0].nameField, "name", "Ошибка возникла в другом поле");
+
+    event.name = "1234567891012345678910123456789101234567891012345678910123456789101234567891012345678910123456789101234567891012345678910123456789101234567891012345678910";
+    error = Event.isValidate(event);
+    equal(error.length, 1, "Ошибок больше или меньше, чем должно было быть");
+    equal(error[0].nameField, "name", "Ошибка возникла в другом поле");
+
+    event.name = "Что-то важное";
+    error = Event.isValidate(event);
+    equal(error.length, 0, "Данные корректны!!! ошибки быть не должно");
 });
 
-module("LeaveMark(number)");
-test('Передача не числа', function () {
+test('GPS - два числа', function () {
     "use strict";
-    var testEvent = new Event({});
-    equal(testEvent.leaveMark("не число"), 0, 'Если звездочку передали в виде не числа, то 0');
-});
-test('Запуск без параметра', function () {
-    "use strict";
-    var testEvent = new Event({});
-    
-    equal(testEvent.leaveMark(), 0, 'Если звездочку забыли объявить, то 0');
-});
-test('Передача отрицательного числа', function () {
-    "use strict";
-    var testEvent = new Event({});
-    equal(testEvent.leaveMark(-1), 0, 'Звездочка не может быть меньше 0');
-});
-test('Передача числа болешьшего 5', function () {
-    "use strict";
-    var testEvent = new Event({});
-    
-    equal(testEvent.leaveMark(6), 5, 'Звездочка не может быть больше 5');
-});
-test('Передача корректного числа', function () {
-    "use strict";
-    var testEvent = new Event({});
-    
-    equal(testEvent.leaveMark(3), 3, '0-5 звездочка не изменяется, если целая');
-});
-test('Передача дробного числа', function () {
-    "use strict";
-    var testEvent = new Event({});
-    equal(testEvent.leaveMark(3.124), 3, 'Звездочки - Int');
-});
+    var event = new Event(),
+        error;
+    event.gps.x = event.gps.y = "Ой не число";
+    error = Event.isValidate(event);
+    equal(error.length, 2, "Ошибок больше или меньше, чем должно было быть");
+    equal(error[0].nameField, "gps.x", "Ошибка возникла в другом поле");
+    equal(error[1].nameField, "gps.y", "Ошибка возникла в другом поле");
 
-module("SetLocation(location)");
-test('Gps - undef', function () {
-    "use strict";
-    var testEvent = new Event({}), gps;
-    testEvent.setLocation(gps, "");
-    deepEqual(testEvent.location, {
-        "gps": {"x": 0, "y": 0},
-        "$nameLocation": "Earth"
-    }, "GPS - некорректный => установить значения по умолчанию");
+    event.gps.x = event.gps.y = 123;
+    error = Event.isValidate(event);
+    equal(error.length, 0, "Данные корректны!!! ошибки быть не должно");
 });
-test('Передача числа болешьшего 5', function () {
+test('Stars - рейтинг = 0,1,2,3,4,5', function () {
     "use strict";
-    var testEvent = new Event({}), gps;
-    testEvent.setLocation(gps, "");
-    deepEqual(testEvent.location, {
-        "gps": {"x": 0, "y": 0},
-        "$nameLocation": "Earth"
-    }, "GPS - некорректный => установить значения по умолчанию");
-});
-test('Передача объекта не являющимся gps', function () {
-    "use strict";
-    var testEvent = new Event({});
-    testEvent.setLocation("Not gps", "");
-    deepEqual(testEvent.location, {
-        "gps": {"x": 0, "y": 0},
-        "$nameLocation": "Earth"
-    }, "GPS - не содержит X  или Y => установить значения по умолчанию");
-});
-test('Имя места - не строка', function () {
-    "use strict";
-    var testEvent = new Event({});
-    testEvent.setLocation({"x": 0, "y": 0}, []);
-    deepEqual(testEvent.location, {
-        "gps": {"x": 0, "y": 0},
-        "$nameLocation": "Earth"
-    }, "Название места не строка => установить значения по умолчанию");
-});
-test('Корректный тест', function () {
-    "use strict";
-    var testEvent = new Event({});
-    testEvent.setLocation({"x": 1, "y": 2}, "Moon");
-    deepEqual(testEvent.location, {
-        "gps": {"x": 1, "y": 2},
-        "$nameLocation": "Moon"
-    }, "GPS - не содержит X  или Y => установить значения по умолчанию");
+    var event = new Event(),
+        error;
+    event.stars  = "Ой не число";
+    error = Event.isValidate(event);
+    equal(error.length, 1, "Ошибок больше или меньше, чем должно было быть");
+    equal(error[0].nameField, "stars", "Ошибка возникла в другом поле");
+
+    event.stars  = 1.1;
+    error = Event.isValidate(event);
+    equal(error.length, 1, "Ошибок больше или меньше, чем должно было быть");
+    equal(error[0].nameField, "stars", "Ошибка возникла в другом поле");
+
+    event.stars  = 6;
+    error = Event.isValidate(event);
+    equal(error.length, 1, "Ошибок больше или меньше, чем должно было быть");
+    equal(error[0].nameField, "stars", "Ошибка возникла в другом поле");
+
+    event.stars  = -1;
+    error = Event.isValidate(event);
+    equal(error.length, 1, "Ошибок больше или меньше, чем должно было быть");
+    equal(error[0].nameField, "stars", "Ошибка возникла в другом поле");
+
+    for (var i =0 ; i < 5; i += 1 ) {
+        event.stars  = i;
+        error = Event.isValidate(event);
+        equal(error.length, 0, "Данные корректны!!! ошибки быть не должно");
+    }
 });
