@@ -22,7 +22,7 @@
             "nameLocation" : $("#EventFactoryNameLocation"),
             "$coordinateX" : $coordinateMenu.find(".XCoordinate"),
             "$coordinateY" : $coordinateMenu.find(".YCoordinate"),
-            "$stars" : $("#EventFactoryStars"),
+            "stars" : $("#EventFactoryStars"),
             "$cost" : $("#EventFactoryCost"),
             "$parties" : $("#EventFactoryPartiesList").find("ol")
         };
@@ -119,7 +119,7 @@
                 },
                 "nameLocation": this.EventFactory.nameLocation.querySelector("input").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '')
             },
-            "stars" : parseFloat(this.EventFactory.$stars.querySelector("input").value),
+            "stars" : parseFloat(this.EventFactory.stars.querySelector("input").value),
             "cost" :  parseFloat(this.EventFactory.$cost.querySelector("input").value),
             "start": new Date(this.EventFactory.$timer.querySelector(".StartDate").value),
             "end": new Date(this.EventFactory.$timer.querySelector(".FinishDate").value),
@@ -129,7 +129,7 @@
             eventDate.location.gps.x = 0;
             eventDate.location.gps.y = 0;
         }
-        if (DOMValidator.isStars(this.EventFactory.$stars)) {
+        if (DOMValidator.isStars(this.EventFactory.stars)) {
             eventDate.stars = 0;
         }
         if (DOMValidator.isPositiveNumber(this.EventFactory.$cost)) {
@@ -221,7 +221,7 @@
     Calendary.prototype.changeAddition = function () {
         this.errorManager.changeCoordinate(this.EventFactory.$coordinate);
         this.errorManager.changePositiveNumber(this.EventFactory.$cost);
-        this.errorManager.changeStars(this.EventFactory.$stars);
+        this.errorManager.changeStars(this.EventFactory.stars);
     }
 /**
  * @function функция проверяет корректность необходимых полей
@@ -235,7 +235,7 @@
 */
     Calendary.prototype.isCorrecteAdditionFields = function () {
         return DOMValidator.isCoordinate(this.EventFactory.$coordinate) === "" &&
-            DOMValidator.isStars(this.EventFactory.$stars) === "" &&
+            DOMValidator.isStars(this.EventFactory.stars) === "" &&
             DOMValidator.isPositiveNumber(this.EventFactory.$cost) === "";
     }
 /**

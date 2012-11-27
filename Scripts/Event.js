@@ -60,7 +60,6 @@
         Event.isValidate(data).forEach(function(error) {
             newEvent[error.who] = eventDefaultVal[error.who];
         });
-        this.id = createGUID();
         return this;
     };
 
@@ -95,10 +94,10 @@
  */
     var isValidateTimeInterval = function (event) {
         var errors = [];
-        if (!dateValidator(event.start)) {
+        if (!event.start || !dateValidator(event.start)) {
             errors.push( new FieldsError("start", "Дата начала события задана не корректно", true));
         }
-        if (!dateValidator(event.end)) {
+        if (!event.end || !dateValidator(event.end)) {
             errors.push( new FieldsError("end", "Дата конца событий задана не корректно", true));
         }
         if (errors.length === 0) {
@@ -120,10 +119,10 @@
     var isValidateGps = function (event) {
         var errors = [];
 
-        if (!$.isNumeric(event.gps.x)) {
+        if (!event.gps || !$.isNumeric(event.gps.x)) {
             errors.push( new FieldsError("gps.x", "Координата X - не число"));
         }
-        if (!$.isNumeric(event.gps.y)) {
+        if (!event.gps || !$.isNumeric(event.gps.y)) {
             errors.push( new FieldsError("gps.y", "Координата Y - не число"));
         }
         return errors;
@@ -136,7 +135,7 @@
  */
     var isValidateName = function (event) {
         var errors = [];
-        if (event.name.length === 0 || event.name.length > 100) {
+        if (event.name && (event.name.length === 0 || event.name.length > 100)) {
             errors.push( new FieldsError("name", "Название события должно содержать имя от 1 до 100 символов", true));
         }
         return errors;
@@ -149,7 +148,7 @@
  */
     var isValidateStars = function (event) {
         var errors = [];
-        if (!$.isNumeric(event.stars)) {
+        if (!event.stars || !$.isNumeric(event.stars)) {
             errors.push( new FieldsError("stars", "В поле должно быть введено число"));
         } else {
             if (event.stars < 0 || event.stars > 5) {
@@ -171,7 +170,7 @@
  */
     var isValidateCost = function (event) {
         var errors = [];
-        if (!$.isNumeric(event.cost)) {
+        if (!event.cost || !$.isNumeric(event.cost)) {
             errors.push( new FieldsError("cost", "В этом поле должно быть число"));
         }
         else {

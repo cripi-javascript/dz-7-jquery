@@ -95,9 +95,9 @@
      *
      * @return
      */
-    BaseEvent.prototype.getWithLessCostThan = function (maxCost) {
+    BaseEvent.prototype.getEventWithCost = function (min, max) {
         return this.filter(function (event) {
-            return (event.cost < maxCost);
+            return (event.cost >= min && event.cost <= max);
         });
     };
 
@@ -112,10 +112,10 @@
      * @return {Number}
      */
     var starsComparer = function compare(a, b) {
-            if (a.$stars > b.$stars) {
+            if (a.stars > b.stars) {
                 return -1;
             }
-            if (a.$stars < b.$stars) {
+            if (a.stars < b.stars) {
                 return 1;
             }
             return 0;

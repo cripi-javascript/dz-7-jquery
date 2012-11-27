@@ -17,7 +17,7 @@
     });
     currentCalendary.EventFactory.$coordinateX.on('blur', changeCoordinate);
     currentCalendary.EventFactory.$coordinateY.on('blur', changeCoordinate);
-    currentCalendary.EventFactory.$stars.on('blur', function() {
+    currentCalendary.EventFactory.stars.on('blur', function() {
         currentCalendary.errorManager.changeStars(this);
     });
     currentCalendary.EventFactory.$cost.on('blur', function() {
