@@ -4,20 +4,20 @@
     <meta charset="utf-8">
     <title>Календарь</title>
     <link rel="stylesheet" type="text/css" href="choose.css">
+    <script type="text/javascript" src="http://yandex.st/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.tmpl.js"></script>
+    <script type="text/javascript" src="es5-shim.js"></script>
     <script type="text/javascript" src="Model.js"></script>
     <script type="text/javascript" src="Collection.js"></script>
     <script type="text/javascript" src="Event.js"></script>
     <script type="text/javascript" src="Events.js"></script>
-    <script type="text/javascript" src="http://yandex.st/jquery/1.8.2/jquery.min.js"></script>
-    <script type="text/javascript" src="jquery.tmpl.js"></script>
-    <script type="text/javascript" src="es5-shim.js"></script>
     <script type="text/javascript" src="CreateCalendar.js"></script>
 </head>
 
 <body>
 <div>
     <h3>Фильтрация текущей коллекции </h3>
-    <div>
+    <div class="filterCollection">
         <label><input type="checkbox" name="filter" class="filter1"/>Выбрать последущие события</label>
         <label><input type="checkbox" name="filter" class="filter2"/>Выбрать предыдущие события</label>
         <div>Сортировать по</div>

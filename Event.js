@@ -58,13 +58,13 @@ Event.prototype.validate = function () {//проверяет корректно�
     }
 };
 
+$.template("eventTemplate", "<p>Событие: ${Name}</p><p>Начало: ${Start}</p><p>Конец: ${End}</p><p>Продолжительность: ${Length}</p><p>Рейтинг: ${Rating}</p><p>Место: ${Place}</p><p>Комментарий: ${Comment}</p><p>Сcылка: ${Link}</p><br>");
+
 Event.prototype.createSection = function () {
     "use strict";
-    var el,
-        markup = "<p>Событие: ${Name}</p><p>Начало: ${Start}</p><p>Конец: ${End}</p><p>Продолжительность: ${Length}</p><p>Рейтинг: ${Rating}</p><p>Место: ${Place}</p><p>Комментарий: ${Comment}</p><p>Сcылка: ${Link}</p><br>",
+    var $el,
         event_temp = [{Name: this.name, Start: this.start, End: this.end, Length: hours(this.end - this.start), Rating: this.rating, Place: this.place, Comment: this.comment, Link: this.link}];
-    el = document.createElement('section');
-    $.template("eventTemplate", markup);
-    $.tmpl("eventTemplate", event_temp).appendTo(el);
-    return el;
+    $el = $('<section/>');
+    $.tmpl("eventTemplate", event_temp).appendTo($el);
+    return $el;
 };
