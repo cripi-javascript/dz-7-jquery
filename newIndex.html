@@ -153,12 +153,12 @@
 <script src="./Scripts/TableEventBase.js"></script>
 <script src="./Scripts/Calendar.js"></script>
 <script type="text/javascript">
-    (function (){
+    $(function (){
         var $eventFactory = $("#EventFactory");
         var $eventFilter = $("#EventFilter");
         var $eventTable = $("#eventList");
         var calendar = new Calendar($eventFactory, $eventFilter, $eventTable, "./base.json");
-    }());
+    });
 </script>
 </body>
 </html>
