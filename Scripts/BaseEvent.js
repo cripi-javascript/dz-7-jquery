@@ -89,11 +89,12 @@
     };
 
     /**
-     * @function Возвращает новую оболочку, но уже с событиями, которые будут в определенный период
+     * @function Возвращает новую оболочку, но уже с событиями, которые стоят не меньше min и не больше max
      *
-     * @param {Number} maxCost - начала периода
+     * @param {Number} min - начала периода
+     * @param {Number} max - начала периода
      *
-     * @return
+     * @return {BaseEvent}
      */
     BaseEvent.prototype.getEventWithCost = function (min, max) {
         return this.filter(function (event) {

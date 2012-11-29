@@ -21,13 +21,12 @@
     visibility:hidden
 }
 
-.ErrorActivateOn {
-    color: red;
-    visibility:show
+.Error {
+    color: orange;
 }
 
-.TitleAddEvent {
-    color: blue;
+.CriticalError {
+    color: red;
 }
 .ColonTable {
     float: left;

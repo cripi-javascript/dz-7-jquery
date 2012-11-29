@@ -38,7 +38,7 @@
 */
     Model.prototype.get = function (attribute) {
         if (typeof attribute !== 'string' || typeof this[attribute] === "undefined") {
-            return;
+            return undefined;
         }
         return this[attribute];
     };

@@ -119,10 +119,10 @@
     var isValidateGps = function (event) {
         var errors = [];
 
-        if (!event.gps || !$.isNumeric(event.gps.x)) {
+        if (typeof event.gps === "undefined" || !$.isNumeric(event.gps.x)) {
             errors.push( new FieldsError("gps.x", "Координата X - не число"));
         }
-        if (!event.gps || !$.isNumeric(event.gps.y)) {
+        if (typeof event.gps === "undefined" || !$.isNumeric(event.gps.y)) {
             errors.push( new FieldsError("gps.y", "Координата Y - не число"));
         }
         return errors;
@@ -135,7 +135,7 @@
  */
     var isValidateName = function (event) {
         var errors = [];
-        if (event.name && (event.name.length === 0 || event.name.length > 100)) {
+        if (event.name === "undefined" || event.name.length === 0 || event.name.length > 100) {
             errors.push( new FieldsError("name", "Название события должно содержать имя от 1 до 100 символов", true));
         }
         return errors;
@@ -148,7 +148,7 @@
  */
     var isValidateStars = function (event) {
         var errors = [];
-        if (!event.stars || !$.isNumeric(event.stars)) {
+        if (typeof event.stars === "undefined" || !$.isNumeric(event.stars)) {
             errors.push( new FieldsError("stars", "В поле должно быть введено число"));
         } else {
             if (event.stars < 0 || event.stars > 5) {
@@ -170,7 +170,7 @@
  */
     var isValidateCost = function (event) {
         var errors = [];
-        if (!event.cost || !$.isNumeric(event.cost)) {
+        if (typeof event.cost === "undefined" || !$.isNumeric(event.cost)) {
             errors.push( new FieldsError("cost", "В этом поле должно быть число"));
         }
         else {
@@ -194,14 +194,6 @@
             isValidateCost(event),
             isValidateStars(event)
         );
-    };
-/**
- * @function Функция, печатающие значение локационных данных объекта
- *
- * @return {String} [location], (x, y) 
-*/
-    Event.prototype.locationToString = function() {
-        return this.location.nameLocation + ", (" + this.location.gps.x + ";" + this.location.gps.y + ")";
     };
 /**
  * @function Функция, печатающие значение рейтинга в звездочках
