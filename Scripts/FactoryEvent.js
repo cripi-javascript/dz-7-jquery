@@ -18,7 +18,7 @@
     toExport.FactoryEvent = FactoryEvent;
 
     /**
-     * @function - функция читает {Event} элемент из DOM
+     * @function - функция читает {Event} элемент из фибричных полей
      * @return {Object}
      */
     FactoryEvent.prototype.readEvent = function () {
@@ -42,16 +42,9 @@
             "parties": parties
         };
     };
+
     /**
-     * @function записать данные в нормальном виде
-     * @private
-     * @param {Date} date
-     */
-    var printDate = function (date) {
-        return date.getFullYear().toString() + "-" + date.getMonth().toString() + "-" + date.getDate().toString();
-    };
-    /**
-     * @function - функция читает {Event} элемент из DOM
+     * @function - функция пишет в поля фабрики Default поля
      */
     FactoryEvent.prototype.WriteDefaultEvent = function () {
         var defaultEvent = new Event();
@@ -59,15 +52,17 @@
             $(this).attr("value", "");
         });
 
-        this.$startEvent.val(printDate(defaultEvent.start));
-        this.$endEvent.val(printDate(defaultEvent.end));
+        this.$startEvent.val(Model.printDate(defaultEvent.start));
+        this.$endEvent.val(Model.printDate(defaultEvent.end));
         this.$name.val(defaultEvent.name);
         this.$x.val(defaultEvent.gps.x);
         this.$y.val(defaultEvent.gps.y);
         this.$stars.val(defaultEvent.stars);
         this.$cost.val(defaultEvent.cost);
     };
-
+    /**
+     * @function проверяет объект созданный фабрикой, активизирует валидаторы
+     */
     FactoryEvent.prototype.eventValidation = function () {
         var eventObj = this.readEvent(),
             errors= Event.isValidate(eventObj),

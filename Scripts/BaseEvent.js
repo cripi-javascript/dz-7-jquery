@@ -1,5 +1,4 @@
-﻿/*global Collection: true*/
-(function (toExport) {
+﻿(function (toExport) {
     "use strict";
     /**
      * Создает оболочку над массивом событий, предоставляющую "sql" подобные операции
@@ -102,7 +101,6 @@
         });
     };
 
-
     /**
      * @function Компаратор рейтинга по убыванию
      * @private
@@ -127,7 +125,6 @@
      * @return {BaseEvent}
     */
     BaseEvent.prototype.sortByStars = function (ascending) {
-        
         return this.sortBy(starsComparer, ascending);
     };
 
@@ -156,7 +153,6 @@
      * @return {BaseEvent}
      */
     BaseEvent.prototype.sortByDate = function (ascending) {
-        
         return this.sortBy(dateComparer, ascending);
     };
 }(window));

@@ -1,13 +1,12 @@
 ﻿(function (toExport) {
     "use strict";
     /**
-     * @namespace Пространство имен для календаря
      *
-     * @field {EventFactory}  объект, хранящий ссылки на inputы необходимые для создания нового события
-     * @field eventList  ссылка на дом объект, хранящий список событий
-     * @field eventBase все события пользователя
-     * @field errorManager объект хранящий функции для валидации полей в дом и хранящий в себе некоторые тривиальные операции
-     * @field currentFilters фильтры наложенные на текущие события
+     * @param {jQuery} $factory  объект, содержащий фабрику событий
+     * @param {jQuery} $filter объект, содержащий различные фильтры
+     * @param {jQuery} $table
+     * @param {String} baseUrl
+     * @constructor контроллер каландаря
      */
     var Calendar = function ($factory, $filter, $table, baseUrl) {
         var cloneCalendar = this;
@@ -20,7 +19,7 @@
 
         this.factory.$container.find("input[type = text], input[type = date]").on("blur", function () {
             cloneCalendar.factory.eventValidation();
-        })
+        });
 
         this.factory.$container.find("#SubmitNewEventButton").on("click", function () {
             var eventObj = cloneCalendar.factory.readEvent(),
@@ -29,17 +28,20 @@
                     return element.isCritical;
                 });
             cloneCalendar.factory.eventValidation();
-            if (isCritical) {
-                return;
-            }
-            if (errors.length !== 0) {
-                if (!confirm('Некоторые незначительные поля некорректны, продолжить?')) {
-                    return;
+            if (!isCritical) {
+                if (errors.length !== 0 ) {
+                    if (confirm('Некоторые незначительные поля некорректны, продолжить?')) {
+                        cloneCalendar.saveNewEvent(baseUrl, eventObj);
+                        alert("УИИИ!!!");
+                    }
+                }
+                else {
+                    cloneCalendar.saveNewEvent(baseUrl, eventObj);
+                    alert("УИИИ!!!");
                 }
             }
-            cloneCalendar.saveNewEvent(baseUrl, eventObj);
-            alert("УИИИ!!!");
         });
+        //todo это гомосятина ! но почему то у input type = radio, нет события blur
         this.filter.$container.find("input").on("click", function () {
             var newBaseEvent = cloneCalendar.filter.apply(cloneCalendar.baseEvent);
             cloneCalendar.table.updateTable(newBaseEvent);
@@ -74,7 +76,7 @@
                 events.push(new Event({
                      "start": new Date(item.start),
                      "end": new Date(item.end),
-                     "name": item.end,
+                     "name": item.name,
                      "gps": {
                          "x": parseFloat(item.gps.x),
                          "y": parseFloat(item.gps.y)
@@ -91,33 +93,27 @@
     /**
      *
      * @param {String} saveUrl url
-     * @param {Event} newEvent новое событие
+     * @param {Object} newEvent новое событие похожий на Event.
      * @function отправляет json с новым событием на сервер
      */
     Calendar.prototype.saveNewEvent = function (saveUrl, newEvent) {
         var cloneCalendar = this;
-        $.post(saveUrl ,newEvent,
-            function (data){
+        $.post(saveUrl ,newEvent)
+            .done(function () {
                 cloneCalendar.baseEvent.items.push(new Event(newEvent));
                 var newBaseEvent = cloneCalendar.filter.apply(cloneCalendar.baseEvent);
                 cloneCalendar.table.updateTable(newBaseEvent);
-                console.log("Ответ от сервера");
-                console.log(data);
-            }, "json");
-    };
-/**
- * @function - функция, отправляет изменения календаря на сервер, а именно, что пользователь добавил новое событие
- *
- * @return {BaseEvent}
-*/
-    Calendar.prototype.sendChange = function (newEvent) {
-        var jsonBase = JSON.stringify(newEvent);
-        ajaxXHR('post','base.json',jsonBase,  function (err) {
-            if (!err) {
-            } else
-            {
-                console.log("Отправка произошла");
-            }
-        });
+                cloneCalendar.factory.WriteDefaultEvent();
+                console.log("Данный удачно сохранились");
+            })
+            .fail(function () {
+                alert("Данные не сохранились. Позвоните в тех поддержку");
+                console.log("Данные не сохранились");
+            });
+        //todo убрать все что ниже как добавиться сервер. Тк будет дублирование
+        cloneCalendar.baseEvent.items.push(new Event(newEvent));
+        var newBaseEvent = cloneCalendar.filter.apply(cloneCalendar.baseEvent);
+        cloneCalendar.table.updateTable(newBaseEvent);
+        cloneCalendar.factory.WriteDefaultEvent();
     };
 }(window));

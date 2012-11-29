@@ -1,8 +1,8 @@
 (function (toExport) {
     var TableEventBase = function ($container) {
         this.$container = $container;
-    };
-    var rowTable = '<tr>' +
+        },
+        rowTable = '<tr>' +
         "<td><%= number %></td>" +
         "<td><%= start %></td>" +
         "<td><%= end %></td>" +
@@ -12,18 +12,27 @@
         "<td><%= stars %></td>" +
         "<td><%= cost %></td>" +
         "<td><%= parties %></td>" +
-        "</tr>";
-    var templateRowParty ='<option>' +
+        "</tr>",
+         templateRowParty = '<option>' +
         "<%= party %>" +
         '</option>';
     toExport.TableEventBase = TableEventBase;
+    /**
+     * @function Функция отображет {BaseEvent}
+     * @param {BaseEvent} base
+     */
     TableEventBase.prototype.updateTable = function (base) {
+        var tableHtml = "",
+            item,
+            i,
+            j,
+            partiesHtml;
         this.$container.children().remove();
-        var tableHtml = "";
-        for (var i = 0; i < base.items.length; i += 1) {
-            var item = base.items[i];
-            var partiesHtml = "";
-            for (var j = 0; j < item.parties.length; j += 1) {
+
+        for (i = 0; i < base.items.length; i += 1) {
+            item = base.items[i];
+            partiesHtml = "";
+            for (j = 0; j < item.parties.length; j += 1) {
                 partiesHtml += tmpl(templateRowParty, {"party": item.parties[j]});
             }
             if (partiesHtml.length !== 0) {
@@ -31,15 +40,15 @@
             }
             tableHtml += tmpl(rowTable, {
                 "number": i,
-                "start": item.start.toDateString(),
-                "end": item.end.toDateString(),
+                "start": Model.printDate(item.start),
+                "end": Model.printDate(item.end),
                 "name": item.name,
                 "x": item.gps.x,
                 "y": item.gps.y,
-                "stars": item.stars,
+                "stars": item.starsToString(),
                 "cost": item.cost,
                 "parties": partiesHtml
-            })
+            });
         }
         $(tableHtml).appendTo(this.$container);
     };

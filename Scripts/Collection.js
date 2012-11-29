@@ -1,5 +1,4 @@
-﻿/*global Collection: true*/
-(function(toExport) {
+﻿(function(toExport) {
     "use strict";
 /**
  * Создает оболочка для хранения массива объектов с операциями по извлечению более конкретных элементов

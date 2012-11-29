@@ -50,4 +50,21 @@
         "use strict";
         throw new Error('this is Abstract method');
     };
+
+    /**
+     * @function записать даты в нормальном виде
+     * @param {Date} date
+     */
+    var printDate;
+    if ($.browser.msie) {
+        printDate = function (date) {
+            return date.getFullYear().toString() + "/" + date.getMonth().toString() + "/" + date.getDate().toString();
+        }
+    }
+    else {
+        printDate = function (date) {
+            return date.getFullYear().toString() + "-" + date.getMonth().toString() + "-" + date.getDate().toString();
+        };
+    }
+    Model.printDate = printDate;
 }(window));
