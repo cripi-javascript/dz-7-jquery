@@ -1,4 +1,4 @@
-﻿(function(toExport) {
+﻿(function (toExport) {
     "use strict";
 /**
  * Создает оболочка для хранения массива объектов с операциями по извлечению более конкретных элементов
@@ -7,7 +7,6 @@
  * @param {Array} otherItems элементы коллекции
 */
     var Collection = function (otherItems) {
-        "use strict";
         var item;
         this.items = [];
         for (item in otherItems) {
@@ -45,7 +44,7 @@
 * @function создает новую коллекцию элементов с теме же элементами + с новым элементом obj
  *
  * @param {Function} comparator компаратор
- * @param {Function} isInvert инвертировать, ли результат
+ * @param {Boolean} isInvert инвертировать, ли результат
  *
  * @return {Object} instanceof this.constructor
 */

@@ -1,17 +1,21 @@
+/*global
+$:false,
+console:false
+ */
 (function (toExport) {
+    "use strict";
     var FilterEventBase = function ($container) {
         this.$container = $container;
-    };
-    toExport.FilterEventBase = FilterEventBase;
-    var readFilter = function ($container) {
-        var timeStatusFilter = $container.find('[name = "TimeStatusFilter"]').filter("input:checked").val();
-        var costFilter = $container.find('[name = "CostFilter"]').filter("input:checked").val();
-        var sortFilter = $container.find('[name = "Sort"]').filter("input:checked").val();
-        return [timeStatusFilter,
-            costFilter,
-            sortFilter
-        ];
-    }
+    },
+        readFilter = function ($container) {
+            var timeStatusFilter = $container.find('[name = "TimeStatusFilter"]').filter("input:checked").val(),
+                costFilter = $container.find('[name = "CostFilter"]').filter("input:checked").val(),
+                sortFilter = $container.find('[name = "Sort"]').filter("input:checked").val();
+            return [timeStatusFilter,
+                costFilter,
+                sortFilter
+                ];
+        };
     /**
      *
      * @function применить группу фильтров к базе base, содержащей события календаря
@@ -25,13 +29,12 @@
         $.each(filters, function (i, filter) {
             if (filterModule[filter]) {
                 newBase = filterModule[filter](newBase);
-            }
-            else {
+            } else {
                 console.log("Фильтр не обнаружен: " + filter);
             }
-        })
+        });
         return newBase;
-    }
+    };
     /**
      *
      * @function фильтр пустышка
@@ -76,9 +79,9 @@
      */
     FilterEventBase.prototype.period = function (base) {
         var startDate = new Date(this.$container.find(".StartDate").eq(0).val()),
-             finishDate = new Date(this.$container.find(".EndDate").eq(0).val());
+            finishDate = new Date(this.$container.find(".EndDate").eq(0).val());
         if (startDate.getTime() <= finishDate.getTime()) {
-            return base.getEventFromPeriod(startDate,finishDate);
+            return base.getEventFromPeriod(startDate, finishDate);
         }
         return base;
     };
@@ -90,7 +93,7 @@
      */
     FilterEventBase.prototype.minMaxCost = function (base) {
         var minCost = parseFloat(this.$container.find(".MinCost").eq(0).val()),
-             maxCost = parseFloat(this.$container.find(".MaxCost").eq(0).val());
+            maxCost = parseFloat(this.$container.find(".MaxCost").eq(0).val());
         if (minCost <= maxCost) {
             return base.getEventWithCost(minCost, maxCost);
         }
@@ -114,4 +117,6 @@
     FilterEventBase.prototype.date = function (base) {
         return base.sortByDate(false);
     };
+
+    toExport.FilterEventBase = FilterEventBase;
 }(window));

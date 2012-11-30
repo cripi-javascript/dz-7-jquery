@@ -6,6 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 (function (toExport) {
+    "use strict";
     /**
      *
      * @constructor {FieldError} - объект с сообщение о том что поле содержит не корректную информацию
@@ -18,5 +19,5 @@
         this.nameField = nameField || "errorField";
         this.message = message || "";
         this.isCritical = isCritical || false;
-    }
+    };
 }(window));

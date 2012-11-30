@@ -1,4 +1,10 @@
+/*global
+$: false,
+Event: false,
+ Model: false
+ */
 (function (toExport) {
+    "use strict";
     /**
      *
      * @param $container
@@ -22,10 +28,10 @@
      * @return {Object}
      */
     FactoryEvent.prototype.readEvent = function () {
-        var parties= [];
-        this.$container.find(".EventsParty").each( function () {
+        var parties = [];
+        this.$container.find(".EventsParty").each(function () {
             var party = $.trim($(this).val());
-            if (party != "") {
+            if (party !== "") {
                 parties.push(party);
             }
         });
@@ -38,7 +44,7 @@
                 "y": parseFloat(this.$y.val())
             },
             "stars": parseFloat(this.$stars.val()),
-            "cost": parseInt(this.$cost.val()),
+            "cost": parseInt(this.$cost.val(), 10),
             "parties": parties
         };
     };
@@ -48,7 +54,7 @@
      */
     FactoryEvent.prototype.WriteDefaultEvent = function () {
         var defaultEvent = new Event();
-        this.$container.each( function () {
+        this.$container.each(function () {
             $(this).attr("value", "");
         });
 
@@ -65,7 +71,7 @@
      */
     FactoryEvent.prototype.eventValidation = function () {
         var eventObj = this.readEvent(),
-            errors= Event.isValidate(eventObj),
+            errors = Event.isValidate(eventObj),
             fieldToDomElementHash = {
                 "start": this.$startEvent,
                 "end": this.$endEvent,
@@ -74,24 +80,27 @@
                 "gps.y": this.$y,
                 "stars": this.$stars,
                 "cost": this.$cost
-            };
-        for (var fieldToDOM in fieldToDomElementHash) {
-            var $validator = fieldToDomElementHash[fieldToDOM].parents().eq(0).next();
-            $validator.empty();
-            $validator.removeClass("CriticalError");
-            $validator.removeClass("Error");
-            $validator.addClass("Valid");
+            },
+            fieldToDOM,
+            $validator;
+        for (fieldToDOM in fieldToDomElementHash) {
+            if (fieldToDomElementHash.hasOwnProperty(fieldToDOM)) {
+                $validator = fieldToDomElementHash[fieldToDOM].parents().eq(0).next();
+                $validator.empty();
+                $validator.removeClass("CriticalError");
+                $validator.removeClass("Error");
+                $validator.addClass("Valid");
+            }
         }
 
         $.each(errors, function (index, erorr) {
-            var $DOMObject = fieldToDomElementHash[erorr.nameField];
-            var $validator = $DOMObject.parents().eq(0).next();
+            var $DOMObject = fieldToDomElementHash[erorr.nameField],
+                $validator = $DOMObject.parents().eq(0).next();
             if ($validator.children().length === 0) {
                 $validator.removeClass("Valid");
                 if (erorr.isCritical === true) {
                     $validator.addClass("CriticalError");
-                }
-                else {
+                } else {
                     $validator.addClass("Error");
                 }
                 $("<span/>", {

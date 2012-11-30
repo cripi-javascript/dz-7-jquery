@@ -1,7 +1,13 @@
+/*global
+ tmpl: false,
+ Model: false,
+ $: false
+*/
 (function (toExport) {
+    "use strict";
     var TableEventBase = function ($container) {
         this.$container = $container;
-        },
+    },
         rowTable = '<tr>' +
         "<td><%= number %></td>" +
         "<td><%= start %></td>" +
@@ -13,7 +19,7 @@
         "<td><%= cost %></td>" +
         "<td><%= parties %></td>" +
         "</tr>",
-         templateRowParty = '<option>' +
+        templateRowParty = '<option>' +
         "<%= party %>" +
         '</option>';
     toExport.TableEventBase = TableEventBase;

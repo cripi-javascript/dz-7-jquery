@@ -1,4 +1,7 @@
-﻿(function (toExport) {
+﻿/*global
+ Collection: false
+ */
+(function (toExport) {
     "use strict";
     /**
      * Создает оболочку над массивом событий, предоставляющую "sql" подобные операции
@@ -7,9 +10,10 @@
      * @augments Collection
      */
     var BaseEvent = function BaseEvent(events) {
-        "use strict";
         Collection.call(this, events);
-    };
+    },
+        starsComparer,
+        dateComparer;
 
     toExport.BaseEvent = BaseEvent;
 
@@ -110,15 +114,15 @@
      *
      * @return {Number}
      */
-    var starsComparer = function compare(a, b) {
-            if (a.stars > b.stars) {
-                return -1;
-            }
-            if (a.stars < b.stars) {
-                return 1;
-            }
-            return 0;
-        };
+    starsComparer = function compare(a, b) {
+        if (a.stars > b.stars) {
+            return -1;
+        }
+        if (a.stars < b.stars) {
+            return 1;
+        }
+        return 0;
+    };
     /**
      * @function Возвращает новую оболочку c теми же событиями, но отсортированными по уменьшению количества звезд
      *
@@ -137,15 +141,15 @@
      *
      * @return {Number}
      */
-    var dateComparer = function (a, b) {
-            if (a.start.getTime() < b.start.getTime()) {
-                return -1;
-            }
-            if (a.start.getTime() > b.start.getTime()) {
-                return 1;
-            }
-            return 0;
-        };
+    dateComparer = function (a, b) {
+        if (a.start.getTime() < b.start.getTime()) {
+            return -1;
+        }
+        if (a.start.getTime() > b.start.getTime()) {
+            return 1;
+        }
+        return 0;
+    };
 
     /**
      * @function Возвращает новую оболочку c теми же событиями, но отсортированными по дате

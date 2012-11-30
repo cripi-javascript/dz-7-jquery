@@ -1,4 +1,14 @@
-﻿module("Tests of Event's constructor");
+﻿/*global
+ module:     false,
+ test:       false,
+ equal:      false,
+ ok:         false,
+ deepEqual:  false,
+ BaseEvent:  false,
+ Event:      false,
+ Collection: false
+ */
+module("Tests of Event's constructor");
 test('Проверка пустого конструктора Event', function () {
     "use strict";
     var event = new Event();
@@ -32,16 +42,16 @@ test('Даты перепутаны местами', function () {
     var event = new Event(),
         error;
     event.start = new Date(100);
-    event.end = new Date (1);
+    event.end = new Date(1);
     error = Event.isValidate(event);
     equal(error.length, 2, "Ошибок больше или меньше, чем должно было быть");
     equal(error[0].nameField, "start", "Ошибка возникла в другом поле");
     equal(error[1].nameField, "end", "Ошибка возникла в другом поле");
 
     event.start = new Date(1);
-    event.end = new Date (100);
+    event.end = new Date(100);
     error = Event.isValidate(event);
-    equal(error.length, 0, "Данные корректны!!! ошибки быть не должно")
+    equal(error.length, 0, "Данные корректны!!! ошибки быть не должно");
 });
 test('Цена посещения положителеное число', function () {
     "use strict";
@@ -97,7 +107,8 @@ test('GPS - два числа', function () {
 test('Stars - рейтинг = 0,1,2,3,4,5', function () {
     "use strict";
     var event = new Event(),
-        error;
+        error,
+        i;
     event.stars  = "Ой не число";
     error = Event.isValidate(event);
     equal(error.length, 1, "Ошибок больше или меньше, чем должно было быть");
@@ -118,7 +129,7 @@ test('Stars - рейтинг = 0,1,2,3,4,5', function () {
     equal(error.length, 1, "Ошибок больше или меньше, чем должно было быть");
     equal(error[0].nameField, "stars", "Ошибка возникла в другом поле");
 
-    for (var i =0 ; i < 5; i += 1 ) {
+    for (i = 0; i < 5; i += 1) {
         event.stars  = i;
         error = Event.isValidate(event);
         equal(error.length, 0, "Данные корректны!!! ошибки быть не должно");

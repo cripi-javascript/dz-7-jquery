@@ -1,22 +1,28 @@
-﻿(function (toExport) {
+﻿/*global
+$: false
+ */
+(function (toExport) {
     "use strict";
 /**
  * @class Абстрактный класс объектов ООП
  *
- * @param {data} - копируемый объект
+ * @param {Object} data копируемый объект
 */
     var Model = function (data) {
         var nameField;
         for (nameField in data) {
-            this[nameField] = data[nameField];
+            if (data.hasOwnProperty(nameField)) {
+                this[nameField] = data[nameField];
+            }
         }
-    };
+    },
+        printDate;
     toExport.Model = Model;
 
 /**
  * @function setter
  *
- * @param {Object} - присваиваемый объект
+ * @param {Object} attributes присваиваемый объект
 */
     Model.prototype.set = function (attributes) {
         var nameAttr;
@@ -32,7 +38,7 @@
 /**
  * @function getter
  *
- * @param {String} имя поля
+ * @param {String} attribute имя поля
  *
  * @return {Object}
 */
@@ -43,25 +49,15 @@
         return this[attribute];
     };
 
-/**
- * @function Проверяющая коррекцию объекта
-*/
-    Model.prototype.validate = function () {
-        "use strict";
-        throw new Error('this is Abstract method');
-    };
-
     /**
      * @function записать даты в нормальном виде
      * @param {Date} date
      */
-    var printDate;
     if ($.browser.msie) {
         printDate = function (date) {
             return date.getFullYear().toString() + "/" + date.getMonth().toString() + "/" + date.getDate().toString();
-        }
-    }
-    else {
+        };
+    } else {
         printDate = function (date) {
             return date.getFullYear().toString() + "-" + date.getMonth().toString() + "-" + date.getDate().toString();
         };

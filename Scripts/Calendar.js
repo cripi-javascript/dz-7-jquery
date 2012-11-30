@@ -1,4 +1,16 @@
-﻿(function (toExport) {
+﻿/*global
+ FactoryEvent: false,
+ FilterEventBase:false,
+ TableEventBase: false,
+ Event: false,
+ confirm:false,
+ alert:false,
+ Model:false,
+ $:false,
+ BaseEvent:false,
+ console:false
+ */
+(function (toExport) {
     "use strict";
     /**
      *
@@ -29,13 +41,12 @@
                 });
             cloneCalendar.factory.eventValidation();
             if (!isCritical) {
-                if (errors.length !== 0 ) {
+                if (errors.length !== 0) {
                     if (confirm('Некоторые незначительные поля некорректны, продолжить?')) {
                         cloneCalendar.saveNewEvent(baseUrl, eventObj);
                         alert("УИИИ!!!");
                     }
-                }
-                else {
+                } else {
                     cloneCalendar.saveNewEvent(baseUrl, eventObj);
                     alert("УИИИ!!!");
                 }
@@ -74,16 +85,16 @@
             for (i = 0; i < date.items.length; i += 1) {
                 var item = date.items[i];
                 events.push(new Event({
-                     "start": new Date(item.start),
-                     "end": new Date(item.end),
-                     "name": item.name,
-                     "gps": {
-                         "x": parseFloat(item.gps.x),
-                         "y": parseFloat(item.gps.y)
-                     },
-                     "cost": parseFloat(item.cost),
-                     "stars": parseInt(item.stars),
-                     "parties": item.parties
+                    "start": new Date(item.start),
+                    "end": new Date(item.end),
+                    "name": item.name,
+                    "gps": {
+                        "x": parseFloat(item.gps.x),
+                        "y": parseFloat(item.gps.y)
+                    },
+                    "cost": parseFloat(item.cost),
+                    "stars": parseInt(item.stars, 10),
+                    "parties": item.parties
                 }));
             }
             calendar.baseEvent = new BaseEvent(events);
@@ -97,8 +108,9 @@
      * @function отправляет json с новым событием на сервер
      */
     Calendar.prototype.saveNewEvent = function (saveUrl, newEvent) {
-        var cloneCalendar = this;
-        $.post(saveUrl ,newEvent)
+        var cloneCalendar = this,
+            newBaseEvent;
+        $.post(saveUrl, newEvent)
             .done(function () {
                 cloneCalendar.baseEvent.items.push(new Event(newEvent));
                 var newBaseEvent = cloneCalendar.filter.apply(cloneCalendar.baseEvent);
@@ -112,7 +124,7 @@
             });
         //todo убрать все что ниже как добавиться сервер. Тк будет дублирование
         cloneCalendar.baseEvent.items.push(new Event(newEvent));
-        var newBaseEvent = cloneCalendar.filter.apply(cloneCalendar.baseEvent);
+        newBaseEvent = cloneCalendar.filter.apply(cloneCalendar.baseEvent);
         cloneCalendar.table.updateTable(newBaseEvent);
         cloneCalendar.factory.WriteDefaultEvent();
     };

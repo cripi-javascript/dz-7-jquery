@@ -1,4 +1,14 @@
-﻿module("Конструктор");
+﻿/*global
+ module:     false,
+ test:       false,
+ equal:      false,
+ ok:         false,
+ deepEqual:  false,
+ BaseEvent:  false,
+ Event:      false,
+ Collection: false
+ */
+module("Конструктор");
 test("Конструктор", function () {
     "use strict";
     var newCollection = new Collection([1, 2, 3, 4]);
@@ -7,7 +17,7 @@ test("Конструктор", function () {
 module("Add(model)");
 test("Добавление элемента в пустую коллекцию", function () {
     "use strict";
-    var newCollection = new Collection();
+    var newCollection = new Collection([]);
     newCollection = newCollection.add(1);
     deepEqual(newCollection.items, [1]);
 });

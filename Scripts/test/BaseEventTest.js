@@ -1,8 +1,17 @@
-﻿module("test simple SQL");
+﻿/*global
+ module:     false,
+ test:       false,
+ equal:      false,
+ ok:         false,
+ BaseEvent:  false,
+ Event:      false,
+ Collection: false
+*/
+module("test simple SQL");
 test('add()', function () {
     "use strict";
     var testBase = new BaseEvent([]);
-    testBase = testBase.add(new Event({"start": new Date(1),"end": new Date(2)}));
+    testBase = testBase.add(new Event({"start": new Date(1), "end": new Date(2)}));
     equal(testBase.items.length, 1);
     ok(testBase instanceof BaseEvent);
     ok(testBase instanceof Collection);
@@ -61,14 +70,14 @@ test('Фильтр по другу', function () {
         "id": "ok"
     });
     withoutFriend = new Event();
-    testBase = new BaseEvent([withFriend,withoutFriend]);
+    testBase = new BaseEvent([withFriend, withoutFriend]);
     eventWithFriendBase = testBase.withFriend("Mangin.Alexander");
     equal(eventWithFriendBase.items.length, 1);
     ok(eventWithFriendBase.items[0].id === "ok");
 });
 test('Фильтр цены', function () {
     "use strict";
-    var testBase , result, less, bigger, free;
+    var testBase, result, less, bigger, free;
     free = new Event();
     less = new Event();
     less.cost = 100;
