@@ -1,0 +1,80 @@
+﻿﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Календарь</title>
+    <link rel="stylesheet" type="text/css" href="choose.css">
+    <script type="text/javascript" src="http://yandex.st/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.tmpl.js"></script>
+    <script type="text/javascript" src="es5-shim.js"></script>
+    <script type="text/javascript" src="json2.js"></script>
+    <script type="text/javascript" src="Model.js"></script>
+    <script type="text/javascript" src="Collection.js"></script>
+    <script type="text/javascript" src="Event.js"></script>
+    <script type="text/javascript" src="Events.js"></script>
+    <script type="text/javascript" src="CreateCalendar.js"></script>
+</head>
+
+<body>
+<div>
+    <h3>Фильтрация текущей коллекции </h3>
+    <div class="filterCollection">
+        <label><input type="checkbox" name="filter" class="filter1"/>Выбрать последущие события</label>
+        <label><input type="checkbox" name="filter" class="filter2"/>Выбрать предыдущие события</label>
+        <div>Сортировать по</div>
+        <label><input type="radio" name = "sort" value = "start"/>Началу</label>
+        <label><input type="radio" name = "sort" value = "length"/>Длительности</label>
+        <label><input type="radio" name = "sort" value = "rating"/>Рейтингу</label>    
+    </div>
+</div>
+<hr/>
+<form class = "Create_Event">
+    
+    <label>Название события
+        <input type="text" value="Новое событие" class = "New_Event" autofocus/>
+    </label>
+    <br>
+    <label>Дата начала:
+        <input type="date" class = "start_date"/>
+    </label>
+    <br>
+    <label>Время начала:
+        <input type="time" class = "start_time" />
+    </label>
+    <br>
+    <label>Дата окончания:
+        <input type="date" class = "end_date" />
+    </label>
+    <br>
+    <label>Время окончания:
+        <input type="time" class = "end_time" />
+    </label>
+    <br>
+    <label>Рейтинг
+        <select class = "rating_event">
+            <option>1 *</option>
+            <option>2 *</option>
+            <option>3 *</option>
+            <option>4 *</option>
+            <option>5 *</option>            
+        </select>
+    </label>
+    <br>
+    <label>Место
+        <input type="text" class = "plase_event"/>
+    </label>
+    <br>
+    <label>Комментарий
+        <textarea class = "comment_event"></textarea>
+    </label>
+    <br>
+    <label>Ссылка
+        <input type="url" class = "link_event"/>
+    </label>    
+    <br>
+    <input class="add_event" type="button" value="Добавить событие"/>
+</form>
+<hr/>
+<h3> Текущее состояние коллекции </h3>
+</body>
+</html>
