@@ -1,5 +1,23 @@
 ﻿/*jslint plusplus: true, browser: true, devel: true */
 var currentEvents = new Events();
+
+$.get('current-event.json', null, function (data, textStatus, jqXHR) {
+    "use strict";
+    if (textStatus === "success") {
+        var newEvents = JSON.parse(jqXHR.responseText),
+            newEvent,
+            n = newEvents.length,
+            i;
+        currentEvents.check = false;
+        for (i = 0; i < n; i++) {
+            newEvent = new Event(newEvents[i]);
+            currentEvents.add(newEvent);
+        }
+        WriteCalendar();
+        currentEvents.check = true;
+    }
+});
+
 function WriteCalendar() {
     "use strict";
     var filterEvents = currentEvents,
@@ -50,8 +68,8 @@ function CreateCalendar() {
     time = $(".end_time").val();
     endEv = date + "T" + time + ":00";
     element = new Event({
-        start: new Date(startEv),
-        end:  new Date(endEv),
+        start: startEv,
+        end:  endEv,
         name: $(".New_Event").val(),
         place: $(".plase_event").val(),
         rating: parseFloat($(".rating_event").val().charAt(0)),

@@ -7,6 +7,7 @@
 var Collection = function (items) {
     "use strict";
     this.items = [];
+    this.check = true;// флажок. равен false, если читаем сохраненные данные из файла. Иначе - true
     var keyName;
     for (keyName in items) {
         if (items.hasOwnProperty(keyName)) {
@@ -23,6 +24,9 @@ var Collection = function (items) {
 Collection.prototype.add = function (model) {
     "use strict";
     this.items.push(model);
+    if (this.check === true) {
+        this.sendCurrentState();
+    }
 };
 
 /**
@@ -64,4 +68,17 @@ Collection.prototype.sortBy = function (fieldName) {
         items = this.items;
     }
     return new Collection(items);
+};
+
+Collection.prototype.serialise = function () {// сериализует данные коллекции в JSON
+    "use strict";
+    return JSON.stringify(this.items);
+};
+
+Collection.prototype.sendCurrentState = function (item) {
+    "use strict";
+    var data = this.serialise();
+
+    // POST запрос
+    $.post('current-event.json', data);
 };
